@@ -38,8 +38,13 @@ reviewed-mapping provenance; they have not been re-extracted by the model yet.
 ## Analysis code and prompts
 
 All category instructions are adjacent in [analysis_prompts.py](analysis_prompts.py):
-**environmental**, **social**, and **financial**. The response contract is in
-[analysis_schema.py](analysis_schema.py). Environmental topics also stay together
+**environmental**, **social**, and **financial**. The response contracts are Pydantic models:
+[environmental.py](environmental.py) (`VERDEXEnvironmentalData`),
+[social.py](social.py) (`VERDEXSocialData`), and shared metric/evidence types in
+[extraction_models.py](extraction_models.py).
+[analysis_schema.py](analysis_schema.py) generates the API JSON schemas directly
+from these models; responses are parsed with `model_validate()` before evidence
+validation. Environmental topics also stay together
 inside the environmental prompt.
 
 1. [scripts/read_environment_report.py](scripts/read_environment_report.py) reads all PDF pages or HTML blocks, preserving locators.

@@ -8,7 +8,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis_schema import GROUP_FIELDS, CATEGORY_KEYS, extraction_schema
 from analyze_report import analyze, validate_output, output_json, save_result, merge_results, chunks
-from jsonschema import Draft202012Validator, ValidationError
+from jsonschema import Draft202012Validator
+from pydantic import ValidationError
 
 COMPANY = {'name': 'Test Company', 'ticker': 'TEST'}
 

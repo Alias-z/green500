@@ -11,9 +11,8 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from jsonschema import Draft202012Validator
 from analysis_prompts import build_messages, CATEGORY_PROMPTS
-from analysis_schema import extraction_schema, GROUP_FIELDS, CATEGORY_KEYS
+from analysis_schema import extraction_schema, validate_extraction, GROUP_FIELDS, CATEGORY_KEYS
 from read_environment_report import read_report
 
 
@@ -85,7 +84,7 @@ def observations(body, category):
 
 
 def validate_output(result, category, company, evidence):
-    Draft202012Validator(extraction_schema(category)).validate(result)
+    result = validate_extraction(category, result)
     if result['company'] != {'name': company['name'], 'ticker': company['ticker']}:
         raise ValueError('Model changed the requested company identity')
     lookup = {block['block_id']: block for block in evidence['blocks']}
