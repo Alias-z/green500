@@ -3,7 +3,7 @@
 - `DATA_SOURCES.md`: source categories, acquisition methods and initial priorities.
 - [ENVIRONMENT_EXTRACTION.md](ENVIRONMENT_EXTRACTION.md): live source-catalog audit, PDF library comparison, extraction workflow and tested Airbnb environmental JSON pilot.
 - `report_examples/microsoft/`: one human-readable example in Markdown and HTML.
-- [report_examples/airbnb/demo.json](report_examples/airbnb/demo.json): user-supplied FY2025 Airbnb JSON demo with financial statements, non-GAAP metrics, workforce and geography. Monetary values are in USD; percentage fields use whole percentages (for example, `38` means 38%). Values are preserved as supplied and have not been independently verified.
+- [report_examples/airbnb/results.json](report_examples/airbnb/results.json): consolidated Airbnb JSON with user-supplied FY2025 financial statements, non-GAAP metrics, workforce and geography, plus extracted environmental data in an `environment` section with its own 2022 reporting period and source evidence. Financial demo values are preserved as supplied and have not been independently verified. Monetary values are in USD; percentage fields use whole percentages (for example, `38` means 38%).
 - `raw/`: the supplied materiality reference workbook, retained in Git.
 - `reference/`: CSV exports of the materiality workbook's four sheets.
 - `objects/`: immutable originals and model receipts, named by SHA-256; excluded from Git.

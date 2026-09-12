@@ -56,7 +56,7 @@ claim has been tested on this corpus.
 The downloaded 13,522,953-byte original matches its catalog SHA-256. It is kept
 locally in `data/objects/` and excluded from Git.
 
-The [environment demo](report_examples/airbnb/environment.demo.json) records
+The `environment` section of [Airbnb results](report_examples/airbnb/results.json) records
 13 GHG metrics, a qualified electricity matching claim, evidence pages, source
 hash, reporting period, organizational boundary, assurance and remaining gaps.
 The 2022 summary contains:
