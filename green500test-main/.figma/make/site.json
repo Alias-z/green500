@@ -1,0 +1,11 @@
+{
+  "title": "S&P 500 Sustainability Index",
+  "description": "Compare the sustainability performance of S&P 500 companies.",
+  "language": "en",
+  "robots": {
+    "index": true
+  },
+  "icons": {
+    "icon": "/favicon.svg"
+  }
+}
