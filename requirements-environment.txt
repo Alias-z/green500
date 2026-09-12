@@ -1,0 +1,2 @@
+pdfplumber==0.11.10
+beautifulsoup4==4.15.0

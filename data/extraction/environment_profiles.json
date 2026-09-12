@@ -1,0 +1,991 @@
+[
+  {
+    "company": {
+      "name": "3M",
+      "ticker": "MMM",
+      "cik": "0000066740",
+      "sector": "Industrials"
+    },
+    "directory": "3m",
+    "source": {
+      "id": 2210,
+      "title": "3M 2026 Global Impact Report",
+      "url": "https://multimedia.3m.com/mws/media/2793251O/3m-2026-global-impact-report.pdf",
+      "sha256": "f38bb3df1c7dd5ba6b1ce39fe5745313ef9b43b46dc9e5f30e1e44f78798b7b0",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:17:42.876389+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "As defined by the cited company report; see individual metric qualifications."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_reduction_since_2019",
+        "locator": {
+          "pdf_page": 3
+        },
+        "pattern": "(?P<value>[\\d,]+(?:\\.\\d+)?)% reduction in greenhouse gas emissions",
+        "unit": "percent",
+        "qualification": "Reduction from 2019 baseline; Scope 1 and 2 boundary confirmed on page 20, not absolute tonnes."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_3_reduction_since_2021",
+        "locator": {
+          "pdf_page": 3
+        },
+        "pattern": "We also drove a (?P<value>[\\d,]+(?:\\.\\d+)?)% reduction in our scope 3",
+        "unit": "percent",
+        "qualification": "Reduction from the 2021 baseline; not an absolute inventory."
+      },
+      {
+        "group": "water",
+        "key": "water_efficiency_improvement_since_2019",
+        "locator": {
+          "pdf_page": 3
+        },
+        "pattern": "(?P<value>[\\d,]+(?:\\.\\d+)?)% increase in water efficiency since 2019",
+        "unit": "percent"
+      },
+      {
+        "group": "waste_circularity",
+        "key": "virgin_fossil_plastics_reduction_since_2021",
+        "locator": {
+          "pdf_page": 3
+        },
+        "pattern": "(?P<value>[\\d,]+(?:\\.\\d+)?)-million-pound reduction",
+        "unit": "lb",
+        "scale": 1000000,
+        "source_unit": "million lb",
+        "qualification": "Cumulative avoided use of virgin fossil-based plastics since 2021, not total waste."
+      },
+      {
+        "group": "energy",
+        "key": "renewable_electricity_share",
+        "locator": {
+          "pdf_page": 20
+        },
+        "pattern": "electricity constituted (?P<value>[\\d,]+(?:\\.\\d+)?)% of our total reported",
+        "unit": "percent",
+        "qualification": "Reported electricity use at sites powered by renewable electricity."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Abbott Laboratories",
+      "ticker": "ABT",
+      "cik": "0000001800",
+      "sector": "Health Care"
+    },
+    "directory": "abbott",
+    "source": {
+      "id": 2337,
+      "title": "Abbott Global Sustainability Report 2025",
+      "url": "https://www.abbott.com/content/dam/corp/abbott/en-us/documents/pdfs/abbott-citizenship/Abbott-2025-Global-Sustainability-Report-June-2026.pdf",
+      "sha256": "6820eed47677a2303a3d853de10411b2ac403b6d7c5f55003be97e8bd0242a16",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:53:49.135039+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "2025 global reporting boundary described in report; Exact Sciences excluded. Selected values rounded; water is withdrawal or process consumption as labelled."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 51
+        },
+        "pattern": "Total Direct \\(Scope 1\\) COe Emissions [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000,
+        "source_unit": "1000 tCO2e",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 51
+        },
+        "pattern": "Purchased Energy \\(Scope 2\\) Market-Based COe Emissionsk, n [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000,
+        "source_unit": "1000 tCO2e",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 51
+        },
+        "pattern": "Purchased Energy \\(Scope 2\\) Location-Based COe Emissionsn [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000,
+        "source_unit": "1000 tCO2e",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based",
+        "locator": {
+          "pdf_page": 51
+        },
+        "pattern": "Total \\(Scope 1 and 2\\) Market-Based COe Emissions j, k [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000,
+        "source_unit": "1000 tCO2e",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components."
+      },
+      {
+        "group": "energy",
+        "key": "total_energy",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Total [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "GJ",
+        "scale": 1000,
+        "source_unit": "1000 GJ"
+      },
+      {
+        "group": "water",
+        "key": "withdrawal",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "^Water Withdrawalr [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "m3",
+        "scale": 1000,
+        "source_unit": "megaliters"
+      },
+      {
+        "group": "water",
+        "key": "consumed_in_process",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "^Water Consumed In Process [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "m3",
+        "scale": 1000,
+        "source_unit": "megaliters"
+      },
+      {
+        "group": "waste_circularity",
+        "key": "total_waste",
+        "locator": {
+          "pdf_page": 56
+        },
+        "pattern": "^Total Wastet [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      },
+      {
+        "group": "waste_circularity",
+        "key": "hazardous_waste",
+        "locator": {
+          "pdf_page": 56
+        },
+        "pattern": "^Total Hazardous Wastet [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      }
+    ],
+    "checks": [
+      {
+        "group": "greenhouse_gas",
+        "parts": [
+          "scope_1",
+          "scope_2_market_based"
+        ],
+        "total": "scope_1_2_market_based",
+        "tolerance": 1000
+      }
+    ]
+  },
+  {
+    "company": {
+      "name": "AbbVie",
+      "ticker": "ABBV",
+      "cik": "0001551152",
+      "sector": "Health Care"
+    },
+    "directory": "abbvie",
+    "source": {
+      "id": 2339,
+      "title": "AbbVie 2025 ESG Action Report",
+      "url": "https://delivery-p157365-e1666014.adobeaemcloud.com/adobe/assets/urn%3Aaaid%3Aaem%3A5c6ab35e-e859-4431-8be4-40c718f9b20a/original/as/abbvie-esg-action-report.pdf",
+      "sha256": "580cbf0dca948e03df76a8961f75b90242670917f34c485775d02d21d5120811",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:55:11.949707+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "Operations under AbbVie operational control; Scope 2 market-based values reflect procured energy attribute certificates."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "Absolute Scope 1 GHG Emissions \\(Metric Tons COe\\)38,39 [\\d,]+(?:\\.\\d+)?\\* [\\d,]+(?:\\.\\d+)?\\* (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "2025 figure marked as having third-party limited assurance; operational-control boundary."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "Absolute Scope 2 Location-based GHG Emissions \\(Metric Tons COe\\)40 [\\d,]+(?:\\.\\d+)?\\* [\\d,]+(?:\\.\\d+)?\\* (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "2025 figure marked as having third-party limited assurance; operational-control boundary."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "Absolute Scope 2 Market-based GHG Emissions \\(Metric Tons COe\\)38,40 [\\d,]+(?:\\.\\d+)?\\* [\\d,]+(?:\\.\\d+)?\\* (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "2025 figure marked as having third-party limited assurance; operational-control boundary."
+      },
+      {
+        "group": "energy",
+        "key": "total_energy",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "Absolute\\ Total\\ Energy\\ Consumption \\(MWh\\) [\\d,]+(?:\\.\\d+)?\\*? [\\d,]+(?:\\.\\d+)?\\*? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "MWh",
+        "qualification": "2025 figure marked as having third-party limited assurance."
+      },
+      {
+        "group": "energy",
+        "key": "renewable_energy",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "Absolute\\ Total\\ Renewable\\ Energy\\ Consumption \\(MWh\\) [\\d,]+(?:\\.\\d+)?\\*? [\\d,]+(?:\\.\\d+)?\\*? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "MWh",
+        "qualification": "2025 figure marked as having third-party limited assurance."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Accenture",
+      "ticker": "ACN",
+      "cik": "0001467373",
+      "sector": "Information Technology"
+    },
+    "directory": "accenture",
+    "source": {
+      "id": 2313,
+      "title": "Accenture 360\u00b0 Value Report 2025",
+      "url": "https://www.accenture.com/content/dam/accenture/final/accenture-com/document-4/accenture-360-value-report-2025.pdf",
+      "sha256": "644ef37fb6905816e91e10e8f6e90123fa6a569c1591d33d631d3f6530fe8e14",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:44:27.894563+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "As defined by the cited company report; see individual metric qualifications."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "Gross emissions retained before carbon removal credits. Do not equate net residual emissions with gross inventory."
+      ],
+      "period_start": "2024-09-01",
+      "period_end": "2025-08-31"
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Scope\\ 1 (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "tCO2e",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Scope\\ 2 (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "tCO2e",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_3_reported_categories",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Scope\\ 3 (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "tCO2e",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Scope\\ 1\\ \\&\\ 2\\ Emissions (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "tCO2e",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "total_market_based",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Carbon Emissions (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?\\nCarbon Removal",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "energy",
+        "key": "office_energy",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "Office Energy (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "MWh"
+      },
+      {
+        "group": "energy",
+        "key": "renewable_electricity",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "Renewable Electricity (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "MWh"
+      },
+      {
+        "group": "water",
+        "key": "consumption",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "Total Water Consumption (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
+        "unit": "m3"
+      }
+    ],
+    "checks": [
+      {
+        "group": "greenhouse_gas",
+        "parts": [
+          "scope_1",
+          "scope_2_market_based"
+        ],
+        "total": "scope_1_2_market_based",
+        "tolerance": 0
+      },
+      {
+        "group": "greenhouse_gas",
+        "parts": [
+          "scope_1",
+          "scope_2_market_based",
+          "scope_3_reported_categories"
+        ],
+        "total": "total_market_based",
+        "tolerance": 0
+      }
+    ]
+  },
+  {
+    "company": {
+      "name": "Adobe Inc.",
+      "ticker": "ADBE",
+      "cik": "0000796343",
+      "sector": "Information Technology"
+    },
+    "directory": "adobe",
+    "source": {
+      "id": 2275,
+      "title": "Adobe 2025 CDP Corporate Questionnaire Response",
+      "url": "https://www.adobe.com/cc-shared/assets/pdf/corporate-responsibility/adbe-2025-cdp-response.pdf",
+      "sha256": "cfc2953b6cbcf0d3ee3283cad55ad02b38b887e5139a15104dc696503452d283",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:27:43.905391+00:00"
+    },
+    "environment": {
+      "reporting_year": 2024,
+      "boundary": {
+        "description": "CDP disclosure uses the same reporting boundary as financial statements (PDF page 4)."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "2025 questionnaire reports a fiscal year ending November 29, 2024 (PDF page 4); not calendar 2025 data."
+      ],
+      "period_end": "2024-11-29"
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 101
+        },
+        "pattern": "\\(7\\.6\\.1\\) Gross global Scope 1 emissions \\(metric tons CO2e\\)\\n(?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 102
+        },
+        "pattern": "Reporting year (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)?",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 102
+        },
+        "pattern": "Reporting year [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_3_category_1",
+        "locator": {
+          "pdf_page": 102
+        },
+        "pattern": "\\(7\\.8\\.2\\) Emissions in reporting year \\(metric tons CO2e\\)\\n(?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "Purchased goods and services only; not total Scope 3."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Advanced Micro Devices",
+      "ticker": "AMD",
+      "cik": "0000002488",
+      "sector": "Information Technology"
+    },
+    "directory": "amd",
+    "source": {
+      "id": 2341,
+      "title": "AMD Environmental Sustainability",
+      "url": "https://www.amd.com/en/corporate/corporate-responsibility/environmental-sustainability.html",
+      "sha256": "1be5928dd9ea0e8da5570f01cec30250f441ecf73387f55e9395e91cebefce20",
+      "content_type": "text/html;charset=utf-8",
+      "catalog_last_checked_at": "2026-09-12T14:55:42.115253+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "AMD corporate operational emissions and separately labelled manufacturing-supplier estimates."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based",
+        "locator": {
+          "html_block": 54
+        },
+        "pattern": "AMD reported (?P<value>[\\d,]+(?:\\.\\d+)?) mtCO2e in Scope 1 and 2 emissions",
+        "unit": "tCO2e",
+        "qualification": "Fiscal 2025 combined operational market-based emissions; external limited assurance under ISAE 3000 Revised."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "supplier_emissions_estimate",
+        "locator": {
+          "html_block": 49
+        },
+        "pattern": "carbon emissions intensity is 90 \\((?P<value>[\\d,]+(?:\\.\\d+)?) mtCO2e",
+        "unit": "tCO2e",
+        "status": "company_estimate",
+        "qualification": "Manufacturing supplier estimate; not a complete AMD Scope 3 inventory. May change when verified 2025 supplier data is received."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "supplier_emissions_intensity_estimate",
+        "locator": {
+          "html_block": 49
+        },
+        "pattern": "2025 estimated carbon emissions intensity is (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e per USD million net revenue",
+        "status": "company_estimate",
+        "qualification": "Uses estimated manufacturing supplier emissions and AMD net revenue; not comparable with gross-profit intensity."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "AES Corporation",
+      "ticker": "AES",
+      "cik": "0000874761",
+      "sector": "Utilities"
+    },
+    "directory": "aes",
+    "source": {
+      "id": 2335,
+      "title": "AES Improving Lives | 2025 Sustainability Report",
+      "url": "https://www.aes.com/sites/vault/files/2026-08/2025-Improving-Lives-Report.pdf",
+      "sha256": "441076690863abc7db46046c1c9a438e0a1c9ca268397083ca59961a19385bab",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:52:30.701838+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "Equity-share CY2025 inventory in LRQA assurance appendix, not the operational-control narrative or year-end portfolio snapshot."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "LRQA limited assurance is qualified: waste, water and associated Scope 3 omit Ohio Gen Co-Owned OVEC (3.4% equity share, no operational control). Hydro water passage and administrative-office water excluded."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_fossil",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Scope 1 GHG emission \u2013 Fossil \\(excludes biogenic\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Scope 2 GHG emissions \u2013 \\(Location-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Scope 2 GHG emissions \u2013 \\(Market-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
+      },
+      {
+        "group": "energy",
+        "key": "fuel_for_generation",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Energy\\ use\\ \\(fuel\\ consumed\\ for\\ electricity\\ generation\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "energy",
+        "key": "purchased_electricity_own_use",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Energy\\ use\\ \\(purchased\\ electricity\\ for\\ own\\ use\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "water",
+        "key": "withdrawal",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Water\\ Withdrawal (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "water",
+        "key": "discharge",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Water\\ Discharge (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "waste_circularity",
+        "key": "ash_gypsum_generated",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Solid\\ Waste\\ Generation:\\ Ash\\ \\&\\ Gypsum\\ from\\ coal\\ combustion (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "waste_circularity",
+        "key": "hazardous_waste",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Hazardous\\ Waste3\\.2 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "pollution",
+        "key": "nitrogen_oxides",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Air\\ Emissions:\\ Nitrogen\\ Oxides\\ \\(NOx\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "pollution",
+        "key": "mercury",
+        "locator": {
+          "pdf_page": 55
+        },
+        "pattern": "Air\\ Emissions:\\ Mercury\\ \\(Hg\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Aflac",
+      "ticker": "AFL",
+      "cik": "0000004977",
+      "sector": "Financials"
+    },
+    "directory": "aflac",
+    "source": {
+      "id": 2133,
+      "title": "Aflac Incorporated 2024 Business & Sustainability Report",
+      "url": "https://s24.q4cdn.com/367535798/files/doc_downloads/2025/03/Aflac-Incorporated-2024-Bus-Sust-Report-3-20-25.pdf",
+      "sha256": "b9cb668aeab2d7217a28cd9a30499642313973cb8192f5ae88b0dcb45734e127",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:09:03.925034+00:00"
+    },
+    "environment": {
+      "reporting_year": 2023,
+      "boundary": {
+        "description": "Financial-control boundary covering company-owned and controlled locations in the United States and Japan. Scope 1 excludes 194 tCO2e biogenic emissions."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "2024 report presents 2023 GHG data. Market-based Scope 2 is an explicitly reported zero; carbon offsets have not been deducted from Scope 1."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Scope\\ 11 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Scope\\ 2\\ \\(market\\-based\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Scope\\ 2\\ \\(location\\-based\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_3_reported_categories",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Total (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "qualification": "Categories 1\u20138 only; investment emissions (category 15) are relevant but not yet reported."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Agilent Technologies",
+      "ticker": "A",
+      "cik": "0001090872",
+      "sector": "Health Care"
+    },
+    "directory": "agilent",
+    "source": {
+      "id": 1474,
+      "title": "AGILENT TECHNOLOGIES, INC. SEC 10-K filed 2025-12-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087225000087/a-20251031.htm",
+      "sha256": "a03c867e9093202268f1dd3613e3d6d251ae146ec473f483eb0fc0cabe7da7af",
+      "content_type": "text/html",
+      "catalog_last_checked_at": "2026-09-12T13:33:20.376598+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "Agilent FY2025 Form 10-K environmental narrative; quantitative emissions inventory not supplied in the reviewed passage."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "Target-only extraction from this filing. Requires a sustainability data supplement for absolute emissions, energy, water and waste metrics."
+      ],
+      "period_end": "2025-10-31"
+    },
+    "observations": [
+      {
+        "group": "targets",
+        "key": "net_zero_target_year",
+        "locator": {
+          "html_block": -1
+        },
+        "pattern": "goal to achieve net-zero greenhouse gas emissions by (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "year",
+        "status": "company_target",
+        "qualification": "Target announced in 2021 and reiterated in FY2025 10-K; not achieved emissions performance. Section: Environmental / Climate change."
+      }
+    ],
+    "checks": []
+  },
+  {
+    "company": {
+      "name": "Air Products",
+      "ticker": "APD",
+      "cik": "0000002969",
+      "sector": "Materials"
+    },
+    "directory": "air_products",
+    "source": {
+      "id": 2346,
+      "title": "Air Products 2026 Sustainability Report",
+      "url": "https://www.airproducts.com.cn/-/media/files/en/900/air-products-2026-sustainability-report.pdf",
+      "sha256": "4ed16080c5b2e0c8be8ddb2d43aec6eedf5b206b4ca14d655b0e016beba67d3b",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T15:03:20.942762+00:00"
+    },
+    "environment": {
+      "reporting_year": 2025,
+      "boundary": {
+        "description": "FY2025 financial-control reporting boundary; unconsolidated joint ventures and equity affiliates included in Scope 3 category 15."
+      },
+      "comparability_notes": [
+        "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+        "Missing topics are not zero. No financial demo values have been added.",
+        "Financial-control boundary updated in this report; avoid unadjusted comparisons with earlier inventories. Limited assurance covers Scope 1, 2 and Scope 3 category 3, not all Scope 3."
+      ]
+    },
+    "observations": [
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1",
+        "locator": {
+          "pdf_page": 66
+        },
+        "pattern": "Scope 1 Direct emissions from owned or controlled sources (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000000,
+        "source_unit": "million tCO2e",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_location_based",
+        "locator": {
+          "pdf_page": 66
+        },
+        "pattern": "Scope 2 \\(Location-based\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000000,
+        "source_unit": "million tCO2e",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based",
+        "locator": {
+          "pdf_page": 66
+        },
+        "pattern": "Scope 2 \\(Market-based\\) Indirect emissions adjusted for contractual instruments (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000000,
+        "source_unit": "million tCO2e",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_3_reported_categories",
+        "locator": {
+          "pdf_page": 66
+        },
+        "pattern": "Total Scope 3 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000000,
+        "source_unit": "million tCO2e",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "total_market_based",
+        "locator": {
+          "pdf_page": 66
+        },
+        "pattern": "Total GHG Emissions Scope 1 \\+ Scope 2 \\(market-based\\) \\+ Scope 3 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "tCO2e",
+        "scale": 1000000,
+        "source_unit": "million tCO2e",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes."
+      },
+      {
+        "group": "energy",
+        "key": "total_energy",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Total (?P<value>\\d+ \\d)\\b",
+        "unit": "MWh",
+        "space_decimal": true,
+        "scale": 1000000,
+        "source_unit": "TWh",
+        "qualification": "Source decimal point lost in native text; 76.0 TWh verified against rendered table."
+      },
+      {
+        "group": "water",
+        "key": "withdrawal",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Total Withdrawals (?P<value>\\d+ \\d)\\b",
+        "unit": "m3",
+        "space_decimal": true,
+        "scale": 1000000,
+        "source_unit": "million m3",
+        "qualification": "Decimal interpreted from rendered table, not as an integer."
+      },
+      {
+        "group": "water",
+        "key": "consumption",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Total Water Consumption (?P<value>\\d+ \\d)\\b",
+        "unit": "m3",
+        "space_decimal": true,
+        "scale": 1000000,
+        "source_unit": "million m3",
+        "qualification": "Decimal interpreted from rendered table, not as an integer."
+      },
+      {
+        "group": "waste_circularity",
+        "key": "hazardous_waste",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "(?<![\\w\\u2011-])Hazardous Waste (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      },
+      {
+        "group": "waste_circularity",
+        "key": "nonhazardous_waste",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Non.Hazardous Waste (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      },
+      {
+        "group": "pollution",
+        "key": "nitrogen_oxides",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "^Nitrogen Oxides [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      },
+      {
+        "group": "pollution",
+        "key": "sulfur_oxides",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Sulfur Oxides [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "unit": "t"
+      }
+    ],
+    "checks": [
+      {
+        "group": "greenhouse_gas",
+        "parts": [
+          "scope_1",
+          "scope_2_market_based",
+          "scope_3_reported_categories"
+        ],
+        "total": "total_market_based",
+        "tolerance": 0
+      }
+    ]
+  }
+]

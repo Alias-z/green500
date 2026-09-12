@@ -1,4 +1,4 @@
-import { imgButtons } from "./svg-jq3xm";
+import { imgButtons } from "../ToolbarTopIPad/svg-jq3xm";
 
 function FillShadow() {
   return (

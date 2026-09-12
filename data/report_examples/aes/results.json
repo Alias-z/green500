@@ -1,0 +1,225 @@
+{
+  "company": {
+    "name": "AES Corporation",
+    "ticker": "AES",
+    "cik": "0000874761",
+    "sector": "Utilities"
+  },
+  "environment": {
+    "reporting_year": 2025,
+    "boundary": {
+      "description": "Equity-share CY2025 inventory in LRQA assurance appendix, not the operational-control narrative or year-end portfolio snapshot."
+    },
+    "comparability_notes": [
+      "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+      "Missing topics are not zero. No financial demo values have been added.",
+      "LRQA limited assurance is qualified: waste, water and associated Scope 3 omit Ohio Gen Co-Owned OVEC (3.4% equity share, no operational control). Hydro water passage and administrative-office water excluded."
+    ],
+    "status": "partially_extracted",
+    "source": {
+      "id": 2335,
+      "title": "AES Improving Lives | 2025 Sustainability Report",
+      "url": "https://www.aes.com/sites/vault/files/2026-08/2025-Improving-Lives-Report.pdf",
+      "sha256": "441076690863abc7db46046c1c9a438e0a1c9ca268397083ca59961a19385bab",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:52:30.701838+00:00"
+    },
+    "extraction": {
+      "method": "reviewed_mapping",
+      "format": "pdf",
+      "review": "PDF values visually checked; HTML statements checked in original content.",
+      "limitations": "Only mapped observations are extracted; unmapped topics remain missing.",
+      "checks": []
+    },
+    "greenhouse_gas": {
+      "scope_1_fossil": {
+        "value": 28660121,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2335,
+          "raw_value": "28,660,121",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_1_fossil",
+          "matched_text": "Scope 1 GHG emission – Fossil (excludes biogenic) 28,660,121"
+        }
+      },
+      "scope_2_location_based": {
+        "value": 364360,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2335,
+          "raw_value": "364,360",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_2_location_based",
+          "matched_text": "Scope 2 GHG emissions – (Location-based)1.1 364,360"
+        }
+      },
+      "scope_2_market_based": {
+        "value": 364932,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2335,
+          "raw_value": "364,932",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_2_market_based",
+          "matched_text": "Scope 2 GHG emissions – (Market-based)1.1 364,932"
+        }
+      }
+    },
+    "energy": {
+      "fuel_for_generation": {
+        "value": 105069786,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "105,069,786",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "fuel_for_generation",
+          "matched_text": "Energy use (fuel consumed for electricity generation) 105,069,786"
+        }
+      },
+      "purchased_electricity_own_use": {
+        "value": 150229,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "150,229",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "purchased_electricity_own_use",
+          "matched_text": "Energy use (purchased electricity for own use) 150,229"
+        }
+      }
+    },
+    "water": {
+      "withdrawal": {
+        "value": 1200115166,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "1,200,115,166",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "withdrawal",
+          "matched_text": "Water Withdrawal 1,200,115,166"
+        }
+      },
+      "discharge": {
+        "value": 1126571743,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "1,126,571,743",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "discharge",
+          "matched_text": "Water Discharge 1,126,571,743"
+        }
+      }
+    },
+    "waste_circularity": {
+      "ash_gypsum_generated": {
+        "value": 3323723,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "3,323,723",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "ash_gypsum_generated",
+          "matched_text": "Solid Waste Generation: Ash & Gypsum from coal combustion 3,323,723"
+        }
+      },
+      "hazardous_waste": {
+        "value": 1226,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "1,226",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "hazardous_waste",
+          "matched_text": "Hazardous Waste3.2 1,226"
+        }
+      }
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "nitrogen_oxides": {
+        "value": 25344,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "25,344",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "nitrogen_oxides",
+          "matched_text": "Air Emissions: Nitrogen Oxides (NOx) 25,344"
+        }
+      },
+      "mercury": {
+        "value": 190,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions.",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2335,
+          "raw_value": "190",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "mercury",
+          "matched_text": "Air Emissions: Mercury (Hg) 190"
+        }
+      }
+    }
+  }
+}

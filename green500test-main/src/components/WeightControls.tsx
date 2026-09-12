@@ -20,7 +20,7 @@ export default function WeightControls({ weights, onChange }: Props) {
         <h2 id="weight-title">Define what sustainability means to you</h2>
         <p>
           Scores automatically normalize your relative priorities
-          {total === 0 ? " using equal default weights" : ""}.
+          {total === 0 ? " using the default 50/25/25 weights" : ""}.
         </p>
       </div>
 

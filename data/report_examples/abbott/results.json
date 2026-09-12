@@ -1,0 +1,206 @@
+{
+  "company": {
+    "name": "Abbott Laboratories",
+    "ticker": "ABT",
+    "cik": "0000001800",
+    "sector": "Health Care"
+  },
+  "environment": {
+    "reporting_year": 2025,
+    "boundary": {
+      "description": "2025 global reporting boundary described in report; Exact Sciences excluded. Selected values rounded; water is withdrawal or process consumption as labelled."
+    },
+    "comparability_notes": [
+      "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+      "Missing topics are not zero. No financial demo values have been added."
+    ],
+    "status": "partially_extracted",
+    "source": {
+      "id": 2337,
+      "title": "Abbott Global Sustainability Report 2025",
+      "url": "https://www.abbott.com/content/dam/corp/abbott/en-us/documents/pdfs/abbott-citizenship/Abbott-2025-Global-Sustainability-Report-June-2026.pdf",
+      "sha256": "6820eed47677a2303a3d853de10411b2ac403b6d7c5f55003be97e8bd0242a16",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:53:49.135039+00:00"
+    },
+    "extraction": {
+      "method": "reviewed_mapping",
+      "format": "pdf",
+      "review": "PDF values visually checked; HTML statements checked in original content.",
+      "limitations": "Only mapped observations are extracted; unmapped topics remain missing.",
+      "checks": [
+        {
+          "group": "greenhouse_gas",
+          "parts": [
+            "scope_1",
+            "scope_2_market_based"
+          ],
+          "total": "scope_1_2_market_based",
+          "tolerance": 1000,
+          "difference": 1000,
+          "passed": true
+        }
+      ]
+    },
+    "greenhouse_gas": {
+      "scope_1": {
+        "value": 499000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components.",
+        "evidence": {
+          "pdf_page": 51,
+          "source_id": 2337,
+          "raw_value": "499",
+          "source_unit": "1000 tCO2e",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "scope_1",
+          "matched_text": "Total Direct (Scope 1) COe Emissions 537 504 503 499"
+        }
+      },
+      "scope_2_market_based": {
+        "value": 353000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components.",
+        "evidence": {
+          "pdf_page": 51,
+          "source_id": 2337,
+          "raw_value": "353",
+          "source_unit": "1000 tCO2e",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "scope_2_market_based",
+          "matched_text": "Purchased Energy (Scope 2) Market-Based COe Emissionsk, n 450 400 386 353"
+        }
+      },
+      "scope_2_location_based": {
+        "value": 449000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components.",
+        "evidence": {
+          "pdf_page": 51,
+          "source_id": 2337,
+          "raw_value": "449",
+          "source_unit": "1000 tCO2e",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "scope_2_location_based",
+          "matched_text": "Purchased Energy (Scope 2) Location-Based COe Emissionsn 526 471 471 449"
+        }
+      },
+      "scope_1_2_market_based": {
+        "value": 853000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Rounded to thousand tonnes; reported totals may differ from sums of rounded components.",
+        "evidence": {
+          "pdf_page": 51,
+          "source_id": 2337,
+          "raw_value": "853",
+          "source_unit": "1000 tCO2e",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "scope_1_2_market_based",
+          "matched_text": "Total (Scope 1 and 2) Market-Based COe Emissions j, k 987 904 889 853"
+        }
+      }
+    },
+    "energy": {
+      "total_energy": {
+        "value": 13953000,
+        "unit": "GJ",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2337,
+          "raw_value": "13,953",
+          "source_unit": "1000 GJ",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "total_energy",
+          "matched_text": "Total 13,812 13,821 13,953"
+        }
+      }
+    },
+    "water": {
+      "withdrawal": {
+        "value": 13973000,
+        "unit": "m3",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2337,
+          "raw_value": "13,973",
+          "source_unit": "megaliters",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "withdrawal",
+          "matched_text": "Water Withdrawalr 13,386 13,504 13,973"
+        }
+      },
+      "consumed_in_process": {
+        "value": 2526000,
+        "unit": "m3",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 55,
+          "source_id": 2337,
+          "raw_value": "2,526",
+          "source_unit": "megaliters",
+          "scale_factor": 1000,
+          "year_column": "2025",
+          "label": "consumed_in_process",
+          "matched_text": "Water Consumed In Process 2,273 2,347 2,526"
+        }
+      }
+    },
+    "waste_circularity": {
+      "total_waste": {
+        "value": 71023,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 56,
+          "source_id": 2337,
+          "raw_value": "71,023",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "total_waste",
+          "matched_text": "Total Wastet 70,126 69,446 71,023"
+        }
+      },
+      "hazardous_waste": {
+        "value": 8844,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 56,
+          "source_id": 2337,
+          "raw_value": "8,844",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "hazardous_waste",
+          "matched_text": "Total Hazardous Wastet 11,030 9,692 8,844"
+        }
+      }
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "value": null,
+      "status": "not_extracted"
+    }
+  }
+}

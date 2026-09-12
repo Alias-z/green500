@@ -1,5 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
-import { ALL_COMPANIES, METRIC_LABELS, type Sector } from "./sp500";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { METRIC_LABELS, type Company, type Sector } from "./sp500";
+import { loadResults } from "./results";
+import EnvironmentalResults from "./components/EnvironmentalResults";
 import { DEFAULT_WEIGHTS, scoreAndRank, type ScoredCompany, type SustainabilityWeights } from "./scoring";
 import WeightControls from "./components/WeightControls";
 import PortfolioAllocator from "./components/PortfolioAllocator";
@@ -95,7 +97,9 @@ function IndicatorBar({ label, raw }: { label: string; raw: number }) {
 function ExpandedRow({ company }: { company: ScoredCompany }) {
   return (
     <tr className="row-expand">
-      <td colSpan={7} className="px-4 pb-4 pt-0">
+      <td colSpan={8} className="px-4 pb-4 pt-0">
+        <EnvironmentalResults company={company} />
+        <p className="mx-10 mb-2 text-xs text-gray-600">Materiality ratings below indicate topic relevance, not company performance.</p>
         <div
           className="rounded-[14px] p-4 grid gap-3 mx-10"
           style={{
@@ -117,6 +121,21 @@ function ExpandedRow({ company }: { company: ScoredCompany }) {
 const PAGE_SIZE = 20;
 
 export default function App() {
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
+  const [loadError, setLoadError] = useState("");
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoadState("loading");
+    loadResults(controller.signal).then(data => {
+      setCompanies(data); setLoadState("ready");
+    }).catch(error => {
+      if (controller.signal.aborted) return;
+      setCompanies([]); setLoadError(String(error.message ?? error)); setLoadState("error");
+    });
+    return () => controller.abort();
+  }, [reload]);
   const [activeTab, setActiveTab] = useState<Tab>("All");
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(0);
@@ -127,7 +146,7 @@ export default function App() {
   const [view, setView] = useState<"dashboard" | "portfolio" | "netzero">("dashboard");
 
   const scored = useMemo(() => {
-    const sectorCompanies = activeTab === "All" ? ALL_COMPANIES : ALL_COMPANIES.filter(c => c.sector === activeTab);
+    const sectorCompanies = activeTab === "All" ? companies : companies.filter(c => c.sector === activeTab);
     const query = searchQuery.trim().toLocaleLowerCase();
     const filtered = query ? sectorCompanies.filter(c => c.name.toLocaleLowerCase().includes(query) || c.ticker.toLocaleLowerCase().includes(query)) : sectorCompanies;
     const ranked = scoreAndRank(filtered, weights);
@@ -139,7 +158,7 @@ export default function App() {
         sectorRank: index + 1,
         sectorCount: companies.length,
       }));
-  }, [activeTab, searchQuery, weights]);
+  }, [activeTab, searchQuery, weights, companies]);
 
   const sorted = useMemo(() => {
     const arr = [...scored];
@@ -194,11 +213,14 @@ export default function App() {
 
       </div>
 
-      {view !== "netzero" && <WeightControls weights={weights} onChange={setWeights} />}
+      {loadState === "loading" && <p role="status" className="apple-shell py-6">Loading company results…</p>}
+      {loadState === "error" && <div role="alert" className="apple-shell py-6"><p>{loadError}</p><button onClick={() => setReload(value => value + 1)}>Retry loading results</button></div>}
+      {loadState === "ready" && <p className="apple-shell mt-4 text-sm text-gray-600">{companies.filter(c => c.environment && c.environment.status !== "not_extracted").length} companies with environmental results. Expand a company to view reported values and sources. Rankings use materiality ratings, not measured sustainability performance.</p>}
+      {view !== "netzero" && loadState === "ready" && <WeightControls weights={weights} onChange={setWeights} />}
 
       {/* Table */}
       <div className={`${view === "dashboard" ? "block" : "hidden"} apple-shell mt-6 mb-10 rounded-[22px] overflow-hidden`} style={{ background: "#ffffff", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06)" }}>
-        <table className="w-full table-fixed border-collapse text-sm"><colgroup><col style={{width:"7%"}}/><col style={{width:"24%"}}/><col style={{width:"19%"}}/><col style={{width:"20%"}}/><col style={{width:"14%"}}/><col style={{width:"14%"}}/><col style={{width:"2%"}}/></colgroup>
+        <div className="overflow-x-auto"><table className="w-full table-fixed border-collapse text-sm" style={{ minWidth: 1100 }}><colgroup><col style={{width:"6%"}}/><col style={{width:"20%"}}/><col style={{width:"16%"}}/><col style={{width:"20%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"2%"}}/></colgroup>
           <thead>
             <tr style={{ borderBottom: "0.5px solid rgba(0,0,0,0.08)", background: "#fafafa" }}>
               <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", width: 70 }} onClick={() => handleSort("rank")}>
@@ -217,7 +239,10 @@ export default function App() {
                 ENVIRONMENTAL
               </th>
               <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
-                SOCIAL & RESILIENCE
+                SOCIAL
+              </th>
+              <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
+                FINANCIAL
               </th>
               <th style={{ width: 20 }} />
             </tr>
@@ -228,7 +253,8 @@ export default function App() {
               const sColor = "#0071e3";
               const scoreColor = "#79ab52";
               const emAvg = Math.round((company.metrics.slice(0, 6).reduce((sum, value) => sum + value, 0) / 18) * 100);
-              const resAvg = Math.round((company.metrics.slice(6).reduce((sum, value) => sum + value, 0) / 27) * 100);
+              const socialAvg = Math.round((company.metrics.slice(6, 12).reduce((sum, value) => sum + value, 0) / 18) * 100);
+              const financialAvg = Math.round((company.metrics.slice(12, 15).reduce((sum, value) => sum + value, 0) / 9) * 100);
 
               return [
                 <tr
@@ -294,9 +320,14 @@ export default function App() {
                     <MiniBar value={emAvg} color={SCORE_COLOR(emAvg)} />
                   </td>
 
-                  {/* Resilience avg */}
+                  {/* Social avg */}
                   <td className="px-4 py-3" style={{ minWidth: 100 }}>
-                    <MiniBar value={resAvg} color={SCORE_COLOR(resAvg)} />
+                    <MiniBar value={socialAvg} color={SCORE_COLOR(socialAvg)} />
+                  </td>
+
+                  {/* Financial avg */}
+                  <td className="px-4 py-3" style={{ minWidth: 100 }}>
+                    <MiniBar value={financialAvg} color={SCORE_COLOR(financialAvg)} />
                   </td>
 
                   {/* Expand chevron */}
@@ -310,11 +341,11 @@ export default function App() {
                 ),
               ];
             })}
-            {pageData.length === 0 && (
-              <tr><td colSpan={7} className="px-5 py-14 text-center text-[14px]" style={{ color: "#86868b" }}>No companies match “{searchQuery}”.</td></tr>
+            {pageData.length === 0 && loadState === "ready" && (
+              <tr><td colSpan={8} className="px-5 py-14 text-center text-[14px]" style={{ color: "#86868b" }}>No companies match “{searchQuery}”.</td></tr>
             )}
           </tbody>
-        </table>
+        </table></div>
 
         {/* Pagination — Apple-style */}
         <div className="flex items-center justify-between px-5 py-3" style={{ borderTop: "0.5px solid rgba(0,0,0,0.08)" }}>
@@ -352,8 +383,8 @@ export default function App() {
           </span>
         </div>
       </div>
-      {view === "portfolio" && <PortfolioAllocator companies={ALL_COMPANIES} weights={weights} />}
-      {view === "netzero" && <NetZeroFund companies={ALL_COMPANIES} />}
+      {view === "portfolio" && loadState === "ready" && companies.length > 0 && <PortfolioAllocator companies={companies} weights={weights} />}
+      {view === "netzero" && loadState === "ready" && companies.length > 0 && <NetZeroFund companies={companies} />}
     </div>
   );
 }

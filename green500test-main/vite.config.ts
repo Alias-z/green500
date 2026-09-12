@@ -2,6 +2,7 @@ import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
+import fs from 'node:fs'
 
 import siteConfiguration from './.figma/make/site.json'
 
@@ -19,6 +20,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      resultsData(),
       figmaSiteConfiguration(siteConfiguration),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
@@ -45,6 +47,30 @@ export default defineConfig(({ mode }) => {
     },
   }
 })
+
+// Serve the repository's canonical JSON in dev and emit the same file in production.
+function resultsData(): Plugin {
+  const resultsPath = path.resolve(__dirname, '../results.json');
+  return {
+    name: 'company-results',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] !== '/results.json') return next();
+        try {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.end(fs.readFileSync(resultsPath));
+        } catch {
+          res.statusCode = 503;
+          res.end(JSON.stringify({ error: 'Company results are unavailable.' }));
+        }
+      });
+    },
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'results.json', source: fs.readFileSync(resultsPath) });
+    },
+  };
+}
 
 type FigmaSiteConfiguration = {
   title?: string

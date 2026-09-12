@@ -1,0 +1,207 @@
+{
+  "company": {
+    "name": "Accenture",
+    "ticker": "ACN",
+    "cik": "0001467373",
+    "sector": "Information Technology"
+  },
+  "environment": {
+    "reporting_year": 2025,
+    "boundary": {
+      "description": "As defined by the cited company report; see individual metric qualifications."
+    },
+    "comparability_notes": [
+      "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+      "Missing topics are not zero. No financial demo values have been added.",
+      "Gross emissions retained before carbon removal credits. Do not equate net residual emissions with gross inventory."
+    ],
+    "period_start": "2024-09-01",
+    "period_end": "2025-08-31",
+    "status": "partially_extracted",
+    "source": {
+      "id": 2313,
+      "title": "Accenture 360° Value Report 2025",
+      "url": "https://www.accenture.com/content/dam/accenture/final/accenture-com/document-4/accenture-360-value-report-2025.pdf",
+      "sha256": "644ef37fb6905816e91e10e8f6e90123fa6a569c1591d33d631d3f6530fe8e14",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:44:27.894563+00:00"
+    },
+    "extraction": {
+      "method": "reviewed_mapping",
+      "format": "pdf",
+      "review": "PDF values visually checked; HTML statements checked in original content.",
+      "limitations": "Only mapped observations are extracted; unmapped topics remain missing.",
+      "checks": [
+        {
+          "group": "greenhouse_gas",
+          "parts": [
+            "scope_1",
+            "scope_2_market_based"
+          ],
+          "total": "scope_1_2_market_based",
+          "tolerance": 0,
+          "difference": 0,
+          "passed": true
+        },
+        {
+          "group": "greenhouse_gas",
+          "parts": [
+            "scope_1",
+            "scope_2_market_based",
+            "scope_3_reported_categories"
+          ],
+          "total": "total_market_based",
+          "tolerance": 0,
+          "difference": 0,
+          "passed": true
+        }
+      ]
+    },
+    "greenhouse_gas": {
+      "scope_1": {
+        "value": 19327,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits.",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "19,327",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_1",
+          "matched_text": "Scope 1 19,327 22,395 22,038"
+        }
+      },
+      "scope_2_market_based": {
+        "value": 3711,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits.",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "3,711",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_2_market_based",
+          "matched_text": "Scope 2 3,711 3,584 4,786"
+        }
+      },
+      "scope_3_reported_categories": {
+        "value": 688393,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits.",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "688,393",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_3_reported_categories",
+          "matched_text": "Scope 3 688,393 628,840 515,371"
+        }
+      },
+      "scope_1_2_market_based": {
+        "value": 23038,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Fiscal 2025; office electricity uses market-based accounting. Gross inventory before carbon removal credits.",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "23,038",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "scope_1_2_market_based",
+          "matched_text": "Scope 1 & 2 Emissions 23,038 25,979 26,824"
+        }
+      },
+      "total_market_based": {
+        "value": 711431,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "711,431",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "total_market_based",
+          "matched_text": "Carbon Emissions 711,431 654,819 542,195\nCarbon Removal"
+        }
+      }
+    },
+    "energy": {
+      "office_energy": {
+        "value": 360828,
+        "unit": "MWh",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "360,828",
+          "source_unit": "MWh",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "office_energy",
+          "matched_text": "Office Energy 360,828 345,860 360,973"
+        }
+      },
+      "renewable_electricity": {
+        "value": 340685,
+        "unit": "MWh",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "340,685",
+          "source_unit": "MWh",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "renewable_electricity",
+          "matched_text": "Renewable Electricity 340,685 328,268 336,682"
+        }
+      }
+    },
+    "water": {
+      "consumption": {
+        "value": 1524942,
+        "unit": "m3",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "1,524,942",
+          "source_unit": "m3",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "consumption",
+          "matched_text": "Total Water Consumption 1,524,942 1,495,728 1,442,861"
+        }
+      }
+    },
+    "waste_circularity": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "value": null,
+      "status": "not_extracted"
+    }
+  }
+}

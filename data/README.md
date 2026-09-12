@@ -1,7 +1,12 @@
 # Green500 data
 
+- [../results.json](../results.json): combined company data loaded by the website. Regenerate with `python3 scripts/build_results.py` after updating individual company results.
+- [ENVIRONMENT_BATCH.md](ENVIRONMENT_BATCH.md): extraction results for 10 additional companies from PDF and HTML sources, with reproduction steps and known gaps.
+
 - `DATA_SOURCES.md`: source categories, acquisition methods and initial priorities.
+- [ENVIRONMENT_EXTRACTION.md](ENVIRONMENT_EXTRACTION.md): live source-catalog audit, PDF library comparison, extraction workflow and tested Airbnb environmental JSON pilot.
 - `report_examples/microsoft/`: one human-readable example in Markdown and HTML.
+- [report_examples/airbnb/results.json](report_examples/airbnb/results.json): consolidated Airbnb JSON with unverified FY2025 sample financial values, non-GAAP metrics, workforce and geography, plus extracted environmental data in an `environment` section with its own 2022 reporting period and source evidence. Financial demo values are preserved as supplied and have not been independently verified. Monetary values are in USD; percentage fields use whole percentages (for example, `38` means 38%).
 - `raw/`: the supplied materiality reference workbook, retained in Git.
 - `reference/`: CSV exports of the materiality workbook's four sheets.
 - `objects/`: immutable originals and model receipts, named by SHA-256; excluded from Git.
