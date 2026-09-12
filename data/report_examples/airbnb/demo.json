@@ -1,0 +1,61 @@
+{
+  "company": {
+    "name": "Airbnb, Inc.",
+    "ticker": "ABNB",
+    "fiscal_year": 2025,
+    "currency": "USD"
+  },
+  "income_statement": {
+    "revenue": 12241000000,
+    "cost_of_revenue": 2086000000,
+    "operations_support": 1327000000,
+    "product_development": 2354000000,
+    "sales_marketing": 2588000000,
+    "general_administrative": 1342000000,
+    "operating_income": 2544000000,
+    "interest_income": 705000000,
+    "income_before_tax": 3137000000,
+    "income_tax": 626000000,
+    "net_income": 2511000000
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": 6560000000,
+    "short_term_investments": 4454000000,
+    "funds_receivable_customer": 6959000000,
+    "prepaids_other_current_assets": 824000000,
+    "total_current_assets": 18797000000,
+    "deferred_tax_assets": 2102000000,
+    "goodwill_intangibles": 770000000,
+    "other_noncurrent_assets": 539000000,
+    "total_assets": 22208000000,
+    "accrued_payables_other_current_liabilities": 2948000000,
+    "funds_payable_customers": 6959000000,
+    "current_debt": 1999000000,
+    "unearned_fees": 1743000000,
+    "total_current_liabilities": 13649000000,
+    "long_term_debt": 0,
+    "other_noncurrent_liabilities": 360000000,
+    "total_liabilities": 14009000000,
+    "stockholders_equity": 8199000000
+  },
+  "cash_flow": {
+    "operating_cash_flow": 4646000000,
+    "property_equipment_purchases": 33000000,
+    "free_cash_flow": 4613000000,
+    "free_cash_flow_margin_percent": 38,
+    "investing_cash_flow": -748000000,
+    "financing_cash_flow": -3827000000,
+    "share_repurchases": 3789000000
+  },
+  "non_gaap": {
+    "adjusted_ebitda": 4297000000,
+    "adjusted_ebitda_margin_percent": 35
+  },
+  "workforce": {
+    "employees": 8200
+  },
+  "geography": {
+    "us_revenue": 4814000000,
+    "international_revenue": 7427000000
+  }
+}

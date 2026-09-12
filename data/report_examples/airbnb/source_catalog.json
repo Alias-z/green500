@@ -1,0 +1,214 @@
+{
+  "sources": [
+    {
+      "id": 1785,
+      "company_cik": "0001559720",
+      "title": "Airbnb, Inc. SEC 10-K filed 2026-02-12",
+      "url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000004/abnb-20251231.htm",
+      "categories": [
+        "financial_report"
+      ],
+      "reporting_period": "Report date 2025-12-31; filed 2026-02-12",
+      "discovered_via": "agent",
+      "evidence": [
+        {
+          "form": "10-K",
+          "section": "SEC submissions metadata",
+          "filed_date": "2026-02-12",
+          "report_date": "2025-12-31",
+          "accession_number": "0001559720-26-000004"
+        }
+      ],
+      "document_id": 1257,
+      "sha256": "61bac47250511a2263631ebd99e92b1d42caf305d27ba9d9fbfa7b11aa199c02",
+      "byte_count": 2131290,
+      "content_type": "text/html",
+      "last_checked_at": "2026-09-12T13:30:37.271860+00:00",
+      "parse_status": "pending",
+      "acquisition_method": "scrapy",
+      "collection_status": "available"
+    },
+    {
+      "id": 1786,
+      "company_cik": "0001559720",
+      "title": "Airbnb, Inc. SEC 10-Q filed 2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000027/abnb-20260630.htm",
+      "categories": [
+        "financial_report"
+      ],
+      "reporting_period": "Report date 2026-06-30; filed 2026-08-06",
+      "discovered_via": "agent",
+      "evidence": [
+        {
+          "form": "10-Q",
+          "section": "SEC submissions metadata",
+          "filed_date": "2026-08-06",
+          "report_date": "2026-06-30",
+          "accession_number": "0001559720-26-000027"
+        }
+      ],
+      "document_id": 1256,
+      "sha256": "1369d236b787c4c5bb7d46fddaee0979cfc416492f5e88e009a311008b6ef0a7",
+      "byte_count": 1391182,
+      "content_type": "text/html",
+      "last_checked_at": "2026-09-12T13:30:36.516651+00:00",
+      "parse_status": "pending",
+      "acquisition_method": "scrapy",
+      "collection_status": "available"
+    },
+    {
+      "id": 1787,
+      "company_cik": "0001559720",
+      "title": "Airbnb, Inc. Proxy statement filed 2026-04-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1559720/000119312526175062/d936646ddef14a.htm",
+      "categories": [
+        "social_employee"
+      ],
+      "reporting_period": "Report date 2026-06-05; filed 2026-04-24",
+      "discovered_via": "agent",
+      "evidence": [
+        {
+          "form": "DEF 14A",
+          "section": "SEC submissions metadata",
+          "filed_date": "2026-04-24",
+          "report_date": "2026-06-05",
+          "accession_number": "0001193125-26-175062"
+        },
+        {
+          "section": "Primary proxy document content check",
+          "confirmed_topics": [
+            "pay ratio",
+            "median employee compensation"
+          ]
+        }
+      ],
+      "document_id": 1063,
+      "sha256": "2440ef646fab3f8fc58143f6a83597ef0310eb3ff855e09d369067c248647b2e",
+      "byte_count": 1008003,
+      "content_type": "text/html",
+      "last_checked_at": "2026-09-12T13:28:12.033251+00:00",
+      "parse_status": "pending",
+      "acquisition_method": "scrapy",
+      "collection_status": "available"
+    },
+    {
+      "id": 3923,
+      "company_cik": "0001559720",
+      "title": "Airbnb Sustainability and Community Update",
+      "url": "https://airbnb2020ipo.q4web.com/files/doc_downloads/governance_doc_updated/2023/Airbnb-SustainabilityandCommunityUpdate-2023-111623.pdf",
+      "categories": [
+        "environment_report",
+        "social_employee",
+        "climate_targets"
+      ],
+      "reporting_period": "Update published 2023-11-20; environmental and workforce performance mainly through 2022",
+      "discovered_via": "agent",
+      "evidence": [
+        {
+          "page": 2,
+          "brief": "Airbnb defines the update as covering greenhouse-gas reduction and initiatives intended to help employees from varied backgrounds succeed and thrive."
+        },
+        {
+          "page": 5,
+          "brief": "Airbnb states its net-zero-by-2030 goal and identifies the included Scope 1, Scope 2, and Scope 3 corporate operations."
+        },
+        {
+          "page": 10,
+          "brief": "The report gives distinct 2030 Scope 1 and 2 absolute-emissions and Scope 3 emissions-intensity targets from a 2019 baseline."
+        },
+        {
+          "page": 23,
+          "brief": "The Supporting our Employees section covers flexible work and the annual employee-engagement survey."
+        },
+        {
+          "page": 24,
+          "brief": "Airbnb describes annual pay-equity analysis, learning and development, and performance feedback practices."
+        },
+        {
+          "page": 25,
+          "brief": "The report lists employee compensation, flexibility, health, wellbeing, insurance, and mental-health benefits, subject to eligibility and regional variation."
+        }
+      ],
+      "document_id": 2344,
+      "sha256": "087cf27af5a5c13262961da728c094a4e1027c85f4e3dce5183880f84251e5ad",
+      "byte_count": 13522953,
+      "content_type": "application/pdf",
+      "last_checked_at": "2026-09-12T14:59:22.266180+00:00",
+      "parse_status": "pending",
+      "acquisition_method": "agent_download",
+      "collection_status": "available"
+    },
+    {
+      "id": 3924,
+      "company_cik": "0001559720",
+      "title": "Airbnb Q2 2026 Financial Results and Outlook",
+      "url": "https://news.airbnb.com/airbnb-q2-2026-financial-results",
+      "categories": [
+        "financial_targets"
+      ],
+      "reporting_period": "Outlook issued 2026-08-06 for third-quarter and full-year 2026",
+      "discovered_via": "agent",
+      "evidence": [
+        {
+          "brief": "The official Airbnb Newsroom page identifies Airbnb as author and gives an August 6, 2026 publication date.",
+          "section": "Airbnb Q2 2026 financial results"
+        },
+        {
+          "brief": "Airbnb gives expected third-quarter revenue, revenue growth, gross booking value growth, bookings growth, and Adjusted EBITDA direction.",
+          "section": "Outlook \u2014 Q3 2026"
+        },
+        {
+          "brief": "Airbnb raises its expected full-year revenue growth and Adjusted EBITDA margin outlook.",
+          "section": "Outlook \u2014 Full-year 2026"
+        }
+      ],
+      "document_id": 2345,
+      "sha256": "e7a1e4df991c2ea9b25a48cf7678346328069712ff41432a2b68e4fdeb247939",
+      "byte_count": 196638,
+      "content_type": "text/html;charset=utf-8",
+      "last_checked_at": "2026-09-12T14:59:22.394655+00:00",
+      "parse_status": "pending",
+      "acquisition_method": "agent_download",
+      "collection_status": "available"
+    }
+  ],
+  "datasets": [
+    {
+      "id": 473,
+      "title": "sec_companyfacts",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001559720.json",
+      "source_key": "sec_companyfacts",
+      "sha256": "86979df28e9390d23997206029e608296c823a806980453bde2915719a38b2fc",
+      "byte_count": 1268110,
+      "content_type": "application/json",
+      "last_checked_at": "2026-09-12T12:18:37.634375+00:00",
+      "acquisition_method": "scrapy"
+    }
+  ],
+  "source_checks": [
+    {
+      "source_key": "company_reports",
+      "status": "failed",
+      "checked_at": "2026-09-12T14:24:52.891508+00:00"
+    },
+    {
+      "source_key": "sbti",
+      "status": "unmatched",
+      "checked_at": "2026-09-12T12:21:09.389496+00:00"
+    },
+    {
+      "source_key": "sec_companyfacts",
+      "status": "succeeded",
+      "checked_at": "2026-09-12T12:18:37.671991+00:00"
+    }
+  ],
+  "classification": {
+    "match_status": "matched",
+    "source_tickers": [
+      "ABNB"
+    ],
+    "sector": "Consumer Discretionary",
+    "sub_industry": "Hotels, Resorts & Cruise Lines",
+    "source_commit": "a8794f6695c080a6e99e69f7597ffcab5ec25aec"
+  }
+}
