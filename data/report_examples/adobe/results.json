@@ -96,6 +96,22 @@
           "label": "scope_3_category_1",
           "matched_text": "(7.8.2) Emissions in reporting year (metric tons CO2e)\n409284"
         }
+      },
+      "scope_1_2_market_based_2023": {
+        "value": 30599,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 116,
+          "source_id": 2275,
+          "raw_value": "30,599",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2023",
+          "label": "scope_1_2_market_based_2023",
+          "matched_text": "FY2023 scope 1 and 2 market-based emissions of 30,599 MT"
+        }
       }
     },
     "energy": {

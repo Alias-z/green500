@@ -137,6 +137,22 @@
           "label": "total_market_based",
           "matched_text": "Carbon Emissions 711,431 654,819 542,195\nCarbon Removal"
         }
+      },
+      "scope_1_2_market_based_2024": {
+        "value": 25979,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 67,
+          "source_id": 2313,
+          "raw_value": "25,979",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_1_2_market_based_2024",
+          "matched_text": "Scope 1 & 2 Emissions 23,038 25,979 26,824"
+        }
       }
     },
     "energy": {

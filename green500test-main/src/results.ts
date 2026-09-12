@@ -16,12 +16,19 @@ export function parseResults(input: unknown): Company[] {
     if (metrics.some(value => typeof value !== "number" || !Number.isInteger(value) || value < 0 || value > 3)) {
       throw new Error(`Invalid materiality ratings for ${company.ticker}.`);
     }
+    const scores = record.scores;
+    if (scores) for (const key of ["environmental", "social", "financial"]) {
+      const value = scores[key]?.value;
+      if (value !== null && (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 100)) {
+        throw new Error(`Invalid ${key} score for ${company.ticker}.`);
+      }
+    }
     return {
       id, ticker: company.ticker, name: company.name, sector: company.sector,
       metrics, avgMateriality: metrics.reduce((a, b) => a + b, 0) / metrics.length,
       highPriorityTopics: record.materiality.high_priority_topics ?? "",
       profileMethod: record.materiality.method ?? "",
-      environment: record.environment,
+      environment: record.environment, scores,
     };
   });
 }

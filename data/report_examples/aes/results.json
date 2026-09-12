@@ -147,6 +147,22 @@
           "label": "discharge",
           "matched_text": "Water Discharge 1,126,571,743"
         }
+      },
+      "withdrawal_reduction_since_2024": {
+        "value": 28,
+        "unit": "percent",
+        "status": "extracted_and_reviewed",
+        "qualification": "Approximate year-on-year reduction due to less cooling at some generation sites. Does not establish water-stress performance.",
+        "evidence": {
+          "pdf_page": 39,
+          "source_id": 2335,
+          "raw_value": "28",
+          "source_unit": "percent",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "withdrawal_reduction_since_2024",
+          "matched_text": "28%\nless water withdrawn"
+        }
       }
     },
     "waste_circularity": {

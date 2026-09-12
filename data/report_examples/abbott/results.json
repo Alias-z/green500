@@ -106,6 +106,22 @@
           "label": "scope_1_2_market_based",
           "matched_text": "Total (Scope 1 and 2) Market-Based COe Emissions j, k 987 904 889 853"
         }
+      },
+      "scope_1_2_market_based_2024": {
+        "value": 889000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 51,
+          "source_id": 2337,
+          "raw_value": "889",
+          "source_unit": "tCO2e",
+          "scale_factor": 1000,
+          "year_column": "2024",
+          "label": "scope_1_2_market_based_2024",
+          "matched_text": "Total (Scope 1 and 2) Market-Based COe Emissions j, k 987 904 889 853"
+        }
       }
     },
     "energy": {

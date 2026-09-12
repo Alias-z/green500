@@ -78,6 +78,38 @@
           "label": "scope_2_market_based",
           "matched_text": "Absolute Scope 2 Market-based GHG Emissions (Metric Tons COe)38,40 131,232* 122,287* 76,201"
         }
+      },
+      "scope_1_2024": {
+        "value": 300072,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 53,
+          "source_id": 2339,
+          "raw_value": "300,072",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_1_2024",
+          "matched_text": "Absolute Scope 1 GHG Emissions (Metric Tons COe)38,39 328,259* 300,072*"
+        }
+      },
+      "scope_2_market_based_2024": {
+        "value": 122287,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 53,
+          "source_id": 2339,
+          "raw_value": "122,287",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_2_market_based_2024",
+          "matched_text": "Absolute Scope 2 Market-based GHG Emissions (Metric Tons COe)38,40 131,232* 122,287*"
+        }
       }
     },
     "energy": {

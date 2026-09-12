@@ -95,3 +95,5 @@ Original workbook SHA-256:
 ```text
 bf072431af2064f4e2def3157098d22601c9874f81ef01fc5b7a3a074055a019
 ```
+
+Environmental score calculations and limitations: [ENVIRONMENT_SCORING.md](ENVIRONMENT_SCORING.md).

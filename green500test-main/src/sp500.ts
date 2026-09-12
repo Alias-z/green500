@@ -6,6 +6,16 @@ export const METRIC_LABELS = ["Climate & GHG","Energy","Water","Waste & Circular
 
 export type MetricLabel = (typeof METRIC_LABELS)[number];
 
+export interface ScoreDetail {
+  value: number | null;
+  status?: string;
+  method?: string;
+  reporting_year?: number;
+  coverage?: { scored_topics: number; total_topics: number };
+  components?: { topic: string; label: string; score: number; formula: string; inputs: Record<string, any>[]; annualized_change_percent?: number; baseline_year?: number; reporting_year?: number }[];
+  limitations?: string[];
+}
+
 export interface Company {
   id: number;
   ticker: string;
@@ -15,5 +25,6 @@ export interface Company {
   avgMateriality: number;
   highPriorityTopics: string;
   profileMethod: string;
+  scores?: { environmental: ScoreDetail; social: ScoreDetail; financial: ScoreDetail };
   environment?: Record<string, unknown>;
 }

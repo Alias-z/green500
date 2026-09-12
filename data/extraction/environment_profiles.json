@@ -205,6 +205,18 @@
         },
         "pattern": "^Total Hazardous Wastet [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "t"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based_2024",
+        "locator": {
+          "pdf_page": 51
+        },
+        "pattern": "^Total \\(Scope 1 and 2\\) Market-Based COe Emissions j, k 987 904 (?P<value>889) 853",
+        "unit": "tCO2e",
+        "year_column": "2024",
+        "scale": 1000,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": [
@@ -295,6 +307,30 @@
         "pattern": "Absolute\\ Total\\ Renewable\\ Energy\\ Consumption \\(MWh\\) [\\d,]+(?:\\.\\d+)?\\*? [\\d,]+(?:\\.\\d+)?\\*? (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "MWh",
         "qualification": "2025 figure marked as having third-party limited assurance."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2024",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "^Absolute Scope 1 GHG Emissions .*?328,259\\* (?P<value>300,072)\\*",
+        "unit": "tCO2e",
+        "year_column": "2024",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_2_market_based_2024",
+        "locator": {
+          "pdf_page": 53
+        },
+        "pattern": "^Absolute Scope 2 Market-based GHG Emissions .*?131,232\\* (?P<value>122,287)\\*",
+        "unit": "tCO2e",
+        "year_column": "2024",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": []
@@ -309,7 +345,7 @@
     "directory": "accenture",
     "source": {
       "id": 2313,
-      "title": "Accenture 360\u00b0 Value Report 2025",
+      "title": "Accenture 360° Value Report 2025",
       "url": "https://www.accenture.com/content/dam/accenture/final/accenture-com/document-4/accenture-360-value-report-2025.pdf",
       "sha256": "644ef37fb6905816e91e10e8f6e90123fa6a569c1591d33d631d3f6530fe8e14",
       "content_type": "application/pdf",
@@ -404,6 +440,18 @@
         },
         "pattern": "Total Water Consumption (?P<value>[\\d,]+(?:\\.\\d+)?) [\\d,]+(?:\\.\\d+)? [\\d,]+(?:\\.\\d+)?",
         "unit": "m3"
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based_2024",
+        "locator": {
+          "pdf_page": 67
+        },
+        "pattern": "^Scope 1 & 2 Emissions 23,038 (?P<value>25,979) 26,824",
+        "unit": "tCO2e",
+        "year_column": "2024",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": [
@@ -493,6 +541,18 @@
         "pattern": "\\(7\\.8\\.2\\) Emissions in reporting year \\(metric tons CO2e\\)\\n(?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
         "qualification": "Purchased goods and services only; not total Scope 3."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based_2023",
+        "locator": {
+          "pdf_page": 116
+        },
+        "pattern": "FY2023 scope 1 and 2 market-based emissions of (?P<value>30,599) MT",
+        "unit": "tCO2e",
+        "year_column": "2023",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": []
@@ -555,6 +615,18 @@
         "unit": "tCO2e per USD million net revenue",
         "status": "company_estimate",
         "qualification": "Uses estimated manufacturing supplier emissions and AMD net revenue; not comparable with gross-profit intensity."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based_2020",
+        "locator": {
+          "html_block": 54
+        },
+        "pattern": "2020 base-year value is (?P<value>61,754) mtCO2e",
+        "unit": "tCO2e",
+        "year_column": "2020",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": []
@@ -593,7 +665,7 @@
         "locator": {
           "pdf_page": 54
         },
-        "pattern": "Scope 1 GHG emission \u2013 Fossil \\(excludes biogenic\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "pattern": "Scope 1 GHG emission – Fossil \\(excludes biogenic\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
         "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
       },
@@ -603,7 +675,7 @@
         "locator": {
           "pdf_page": 54
         },
-        "pattern": "Scope 2 GHG emissions \u2013 \\(Location-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "pattern": "Scope 2 GHG emissions – \\(Location-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
         "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
       },
@@ -613,7 +685,7 @@
         "locator": {
           "pdf_page": 54
         },
-        "pattern": "Scope 2 GHG emissions \u2013 \\(Market-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
+        "pattern": "Scope 2 GHG emissions – \\(Market-based\\)1.1 (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
         "qualification": "CY2025 equity-share inventory from assurance appendix; distinct from year-end portfolio snapshot. Scope 1 excludes biogenic emissions."
       },
@@ -696,6 +768,18 @@
         "pattern": "Air\\ Emissions:\\ Mercury\\ \\(Hg\\) (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
         "qualification": "CY2025 environmental equity-share data. Limited assurance opinion is qualified; see PDF page 54 exclusions."
+      },
+      {
+        "group": "water",
+        "key": "withdrawal_reduction_since_2024",
+        "locator": {
+          "pdf_page": 39
+        },
+        "pattern": "(?P<value>28)%\\nless water withdrawn",
+        "unit": "percent",
+        "year_column": "2025",
+        "scale": 1,
+        "qualification": "Approximate year-on-year reduction due to less cooling at some generation sites. Does not establish water-stress performance."
       }
     ],
     "checks": []
@@ -763,7 +847,19 @@
         },
         "pattern": "^Total (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "tCO2e",
-        "qualification": "Categories 1\u20138 only; investment emissions (category 15) are relevant but not yet reported."
+        "qualification": "Categories 1–8 only; investment emissions (category 15) are relevant but not yet reported."
+      },
+      {
+        "group": "greenhouse_gas",
+        "key": "scope_1_2_market_based_2022",
+        "locator": {
+          "pdf_page": 49
+        },
+        "pattern": "and Scope 2 market-based emissions were (?P<value>2,633) metric tons",
+        "unit": "tCO2e",
+        "year_column": "2022",
+        "scale": 1,
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation."
       }
     ],
     "checks": []
@@ -973,6 +1069,18 @@
         },
         "pattern": "Sulfur Oxides [\\d,]+(?:\\.\\d+)? (?P<value>[\\d,]+(?:\\.\\d+)?)",
         "unit": "t"
+      },
+      {
+        "group": "energy",
+        "key": "renewable_electricity_share",
+        "locator": {
+          "pdf_page": 54
+        },
+        "pattern": "Percent Active Renewable Electricity (?P<value>5)%",
+        "unit": "percent",
+        "year_column": "2025",
+        "scale": 1,
+        "qualification": "Active renewable electricity only. GHG trends excluded because the report states the financial-control boundary changed in FY2025."
       }
     ],
     "checks": [

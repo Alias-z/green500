@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { type Company, type Sector } from "./sp500";
+import { rankPerformance, comparePerformance, type SortKey } from "./performance";
 import { loadResults } from "./results";
 import EnvironmentalResults from "./components/EnvironmentalResults";
 import AppToolbar from "./components/AppToolbar";
@@ -65,6 +66,13 @@ function ExpandedRow({ company }: { company: Company }) {
   </td></tr>;
 }
 
+function Score({ value }: { value: number | null }) {
+  if (value === null) return <Missing />;
+  return <div className="flex items-center gap-2"><span className="font-semibold tabular-nums">{value.toFixed(1)}</span>
+    <div className="flex-1 rounded-full bg-gray-100" style={{ height: 4 }}><div className="rounded-full" style={{ height: 4, width: `${value}%`, background: "#79ab52" }} /></div>
+  </div>;
+}
+
 function Missing() {
   return <span className="text-xs text-gray-500">Missing</span>;
 }
@@ -90,25 +98,21 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("All");
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(0);
-  const [sortKey, setSortKey] = useState<"rank" | "score" | "name">("rank");
+  const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
   const [view, setView] = useState<"dashboard" | "portfolio" | "netzero">("dashboard");
 
   const scored = useMemo(() => {
     const sectorCompanies = activeTab === "All" ? companies : companies.filter(c => c.sector === activeTab);
-    const query = searchQuery.trim().toLocaleLowerCase();
-    const filtered = query ? sectorCompanies.filter(c => c.name.toLocaleLowerCase().includes(query) || c.ticker.toLocaleLowerCase().includes(query)) : sectorCompanies;
-    return filtered;
-  }, [activeTab, searchQuery, companies]);
+    return rankPerformance(sectorCompanies);
+  }, [activeTab, companies]);
 
   const sorted = useMemo(() => {
-    // No performance scores exist in the current results; never rank materiality.
-    return [...scored].sort((a, b) => {
-      const cmp = a.name.localeCompare(b.name);
-      return sortKey === "name" && sortDir === "desc" ? -cmp : cmp;
-    });
-  }, [scored, sortKey, sortDir]);
+    const query = searchQuery.trim().toLocaleLowerCase();
+    return scored.filter(c => !query || c.name.toLocaleLowerCase().includes(query) || c.ticker.toLocaleLowerCase().includes(query))
+      .sort((a, b) => comparePerformance(a, b, sortKey, sortDir));
+  }, [scored, searchQuery, sortKey, sortDir]);
 
   const pageData = useMemo(() => sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE), [sorted, page]);
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
@@ -123,7 +127,7 @@ export default function App() {
 
   const handleSort = (key: typeof sortKey) => {
     if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
-    else { setSortKey(key); setSortDir("asc"); }
+    else { setSortKey(key); setSortDir(["score", "environmental", "social", "financial"].includes(key) ? "desc" : "asc"); }
     setPage(0);
   };
 
@@ -153,7 +157,7 @@ export default function App() {
 
       {loadState === "loading" && <p role="status" className="apple-shell py-6">Loading company results…</p>}
       {loadState === "error" && <div role="alert" className="apple-shell py-6"><p>{loadError}</p><button onClick={() => setReload(value => value + 1)}>Retry loading results</button></div>}
-      {loadState === "ready" && <p className="apple-shell mt-4 text-sm text-gray-600">{companies.filter(c => c.environment && c.environment.status !== "not_extracted").length} companies with environmental results. Expand a company to view reported values and sources. Performance scores are missing; reported environmental measurements are available in expanded rows.</p>}
+      {loadState === "ready" && <p className="apple-shell mt-4 text-sm text-gray-600">{companies.filter(c => c.environment && c.environment.status !== "not_extracted").length} companies with environmental results. Expand a company to view reported values and sources. Scores /100 use available data. Expand for calculations and sources. Missing values are excluded. Unscored companies follow alphabetically.</p>}
 
 
       {/* Table */}
@@ -161,27 +165,14 @@ export default function App() {
         <div className="overflow-x-auto"><table className="w-full table-fixed border-collapse text-sm" style={{ minWidth: 1100 }}><colgroup><col style={{width:"6%"}}/><col style={{width:"20%"}}/><col style={{width:"16%"}}/><col style={{width:"20%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"2%"}}/></colgroup>
           <thead>
             <tr style={{ borderBottom: "0.5px solid rgba(0,0,0,0.08)", background: "#fafafa" }}>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", width: 70 }} >
-                RANK
-              </th>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }} onClick={() => handleSort("name")}>
-                COMPANY <SortArrow col="name" />
-              </th>
-              <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }}>
-                SECTOR
-              </th>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 180 }} >
-                SUSTAINABILITY SCORE
-              </th>
-              <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
-                ENVIRONMENTAL
-              </th>
-              <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
-                SOCIAL
-              </th>
-              <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
-                FINANCIAL
-              </th>
+              {([["rank", "RANK"], ["name", "COMPANY"], ["sector", "SECTOR"], ["score", "SUSTAINABILITY SCORE"], ["environmental", "ENVIRONMENTAL"], ["social", "SOCIAL"], ["financial", "FINANCIAL"]] as const).map(([key, label]) => (
+                <th key={key} scope="col" aria-sort={sortKey === key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+                  className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }}>
+                  <button className="text-left cursor-pointer select-none" onClick={() => handleSort(key)} aria-label={`Sort by ${label.toLowerCase()}`}>
+                    {label} <SortArrow col={key} />
+                  </button>
+                </th>
+              ))}
               <th style={{ width: 20 }} />
             </tr>
           </thead>
@@ -201,7 +192,7 @@ export default function App() {
                 >
                   {/* Rank */}
                   <td className="px-4 py-3">
-                    <Missing />
+                    <span className="font-semibold tabular-nums">{company.rank}</span>
                   </td>
 
                   {/* Company */}
@@ -226,14 +217,15 @@ export default function App() {
                   </td>
 
                   {/* Only reported results belong here; materiality is never a score. */}
-                  <td className="px-4 py-3"><Missing /></td>
+                  <td className="px-4 py-3"><Score value={company.score} /><span className="block text-xs text-gray-500 mt-1">{company.score !== null ? "Incomplete data" : ""}</span></td>
                   <td className="px-4 py-3">
-                    <Missing />
+                    <Score value={company.environmental} />
+                    {company.scores?.environmental.coverage && company.environmental !== null && <span className="block text-xs text-gray-500 mt-1">{company.scores.environmental.coverage.scored_topics}/6 topics · {company.scores.environmental.reporting_year}</span>}
                     {company.environment && company.environment.status !== "not_extracted" &&
                       <span className="block text-xs text-blue-700 mt-1">{company.environment.status === "target_only" ? "View reported target" : "View reported data"}</span>}
                   </td>
-                  <td className="px-4 py-3"><Missing /></td>
-                  <td className="px-4 py-3"><Missing /></td>
+                  <td className="px-4 py-3"><Score value={company.social} /></td>
+                  <td className="px-4 py-3"><Score value={company.financial} /></td>
 
                   {/* Expand chevron */}
                   <td className="pr-4 py-3 text-center">
@@ -288,7 +280,7 @@ export default function App() {
           </span>
         </div>
       </div>
-      {view === "portfolio" && loadState === "ready" && <p className="apple-shell py-6">Portfolio scores and allocations are missing. Calculated performance scores are required.</p>}
+      {view === "portfolio" && loadState === "ready" && <p className="apple-shell py-6">Portfolio allocation is not available yet. The dashboard shows environmental scores and their coverage.</p>}
       {view === "netzero" && loadState === "ready" && <p className="apple-shell py-6">Net-zero analysis is missing. Verified performance inputs are required.</p>}
     </div>
   );

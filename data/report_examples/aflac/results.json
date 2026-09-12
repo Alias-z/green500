@@ -95,6 +95,22 @@
           "label": "scope_3_reported_categories",
           "matched_text": "Total 208,401"
         }
+      },
+      "scope_1_2_market_based_2022": {
+        "value": 2633,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 49,
+          "source_id": 2133,
+          "raw_value": "2,633",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2022",
+          "label": "scope_1_2_market_based_2022",
+          "matched_text": "and Scope 2 market-based emissions were 2,633 metric tons"
+        }
       }
     },
     "energy": {

@@ -84,6 +84,24 @@
           "label": "supplier_emissions_intensity_estimate",
           "matched_text": "2025 estimated carbon emissions intensity is 90"
         }
+      },
+      "scope_1_2_market_based_2020": {
+        "value": 61754,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "html_block": 54,
+          "section": "Data in Depth",
+          "element": "li",
+          "source_id": 2341,
+          "raw_value": "61,754",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2020",
+          "label": "scope_1_2_market_based_2020",
+          "matched_text": "2020 base-year value is 61,754 mtCO2e"
+        }
       }
     },
     "energy": {

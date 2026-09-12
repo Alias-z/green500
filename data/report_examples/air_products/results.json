@@ -142,6 +142,22 @@
           "label": "total_energy",
           "matched_text": "Total 76 0"
         }
+      },
+      "renewable_electricity_share": {
+        "value": 5,
+        "unit": "percent",
+        "status": "extracted_and_reviewed",
+        "qualification": "Active renewable electricity only. GHG trends excluded because the report states the financial-control boundary changed in FY2025.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "5",
+          "source_unit": "percent",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "renewable_electricity_share",
+          "matched_text": "Percent Active Renewable Electricity 5%"
+        }
       }
     },
     "water": {

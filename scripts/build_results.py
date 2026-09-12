@@ -1,4 +1,5 @@
 """Build the website's results.json from company results and the materiality CSV."""
+from score_environment import score_environment
 import csv
 import json
 from pathlib import Path
@@ -30,6 +31,7 @@ def build():
                                 "average": float(row["Avg Materiality"]),
                                 "high_priority_topics": row["High-Priority Topics (score 3)"],
                                 "method": row["Profile Method"]},
+                "scores": {"environmental": score_environment(result.get("environment", {})), "social": {"value": None}, "financial": {"value": None}},
                 "environment": result.get("environment", {"status": "not_extracted"}),
             })
     if by_ticker:

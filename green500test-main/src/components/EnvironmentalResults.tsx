@@ -23,6 +23,20 @@ export default function EnvironmentalResults({ company }: { company: Company }) 
     <h3 className="font-semibold">Environmental results · {String(environment.reporting_year ?? "Period varies")}</h3>
     {source.url && <a className="text-blue-700 underline" href={safeUrl(source.url)} target="_blank" rel="noreferrer">{String(source.title ?? "Source report")}</a>}
     {isObject(environment.boundary) && <p className="text-xs mt-2 text-gray-600">{environment.boundary.description}</p>}
+    {company.scores?.environmental.value != null && <div className="mt-4 p-3 rounded-lg bg-gray-50">
+      <h4 className="font-semibold">Environmental score: {company.scores.environmental.value.toFixed(1)}/100 · Incomplete data</h4>
+      <p className="text-xs mt-1">Equal average of {company.scores.environmental.coverage?.scored_topics} available topics out of 6. Missing topics are excluded.</p>
+      {company.scores.environmental.components?.map(component => <div key={component.topic} className="mt-3 text-xs">
+        <p className="font-medium">{component.label}: {component.score.toFixed(2)}/100</p>
+        <p>{component.formula}</p>
+        {component.annualized_change_percent != null && <p>Annualized reduction: {component.annualized_change_percent.toFixed(2)}% ({component.baseline_year}–{component.reporting_year})</p>}
+        {component.inputs.map(input => <p key={input.path}>{label(input.path)}: {Number(input.value).toLocaleString()} {input.unit}
+          {input.evidence?.pdf_page && safeUrl(source.url) && <> · <a className="underline text-blue-700" href={`${source.url.split("#")[0]}#page=${input.evidence.pdf_page}`} target="_blank" rel="noreferrer">PDF page {input.evidence.pdf_page}</a></>}
+          {input.evidence?.section && <> · {input.evidence.section}</>}
+        </p>)}
+      </div>)}
+      {company.scores.environmental.limitations?.map(note => <p key={note} className="text-xs text-gray-600 mt-2">{note}</p>)}
+    </div>}
     <dl className="grid gap-3 mt-4 sm:grid-cols-2">
       {observations.map(({ name, metric }) => <div key={name} className="border-b border-gray-100 pb-2">
         <dt className="text-xs text-gray-600 capitalize">{name}</dt>
