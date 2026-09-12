@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microsoft — source-backed company example</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    body { margin: 0; color: #172033; background: #f3f6fa; line-height: 1.6; }
+    main { max-width: 880px; margin: 0 auto; padding: 48px 24px 72px; }
+    article { background: white; border: 1px solid #dce3ec; border-radius: 16px; padding: 32px; box-shadow: 0 8px 30px rgba(30, 49, 77, .07); }
+    h1 { margin-top: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+    h2 { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e7ebf0; }
+    a { color: #075eb5; text-underline-offset: 3px; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-variant-numeric: tabular-nums; }
+    th, td { padding: .65rem .75rem; border-bottom: 1px solid #dce3ec; text-align: left; vertical-align: top; }
+    th { background: #eef4fb; }
+    td:nth-child(2), th:nth-child(2) { text-align: right; }
+    code { padding: .1rem .3rem; border-radius: 4px; background: #eef1f5; }
+    .scope { color: #526173; font-size: 1.03rem; }
+    @media (max-width: 620px) {
+      main { padding: 20px 12px 40px; }
+      article { padding: 20px 16px; }
+      table { font-size: .9rem; }
+      th, td { padding: .5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article>
+      <h1>Microsoft: one source-backed company example</h1>
+      <p class="scope">Microsoft Corporation is represented by Nasdaq security <strong>MSFT</strong> and SEC registrant <strong>CIK 0000789019</strong>. This example keeps each value with its reporting period and source. It does not calculate a Green500 score, predict future performance, or make an investment recommendation.</p>
+
+      <h2>Financial filings</h2>
+      <p>The latest annual filing in the captured SEC Submissions data is Microsoft's <a href="https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm">FY2026 Form 10-K</a>, accession <code>0001193125-26-323660</code>, filed 29 July 2026. SEC Company Facts reports:</p>
+      <table>
+        <thead><tr><th>Reported fact</th><th>Value</th><th>Period</th></tr></thead>
+        <tbody>
+          <tr><td>Revenue</td><td>$331.839 billion</td><td>1 July 2025–30 June 2026</td></tr>
+          <tr><td>Net income</td><td>$133.749 billion</td><td>1 July 2025–30 June 2026</td></tr>
+          <tr><td>Total assets</td><td>$758.376 billion</td><td>At 30 June 2026</td></tr>
+        </tbody>
+      </table>
+      <p>Revenue and net income are duration facts. Assets is an instant fact. The latest quarterly filing captured before that annual report is the <a href="https://www.sec.gov/Archives/edgar/data/789019/000119312526191507/msft-20260331.htm">FY2026 Q3 Form 10-Q</a>, accession <code>0001193125-26-191507</code>, filed 29 April 2026. It reports quarter-only revenue of $82.886 billion and net income of $31.778 billion for 1 January–31 March 2026, with assets of $694.228 billion at quarter end. These figures come from the SEC filing repository through the standard US GAAP concepts for revenue, net income, and assets; they are reported actuals rather than estimates.</p>
+
+      <h2>Environmental disclosure</h2>
+      <p>Microsoft's <a href="https://aka.ms/SustainabilityFactsheet2026">2026 Environmental Data Fact Sheet</a> is an original company report. Its title year is not the data year: the selected disclosure covers <strong>FY2025, 1 July 2024–30 June 2025</strong>. Table 1A on PDF page 3 reports the following absolute emissions:</p>
+      <table>
+        <thead><tr><th>FY2025 GHG measure</th><th>mtCO2e</th></tr></thead>
+        <tbody>
+          <tr><td>Scope 1</td><td>170,887</td></tr>
+          <tr><td>Scope 2, location-based</td><td>12,030,556</td></tr>
+          <tr><td>Scope 2, market-based</td><td>2,707,428</td></tr>
+          <tr><td>Scope 3 subtotal</td><td>18,243,000</td></tr>
+          <tr><td>Scope 1 + Scope 2 market-based + Scope 3</td><td>21,121,000</td></tr>
+        </tbody>
+      </table>
+      <p>PDF page 9 defines an <strong>operational-control</strong> boundary covering global wholly owned and partially owned subsidiaries under Microsoft's management and operational control, including owned and leased real estate facilities and datacenters. The report says prior values may be recalculated for structural or methodology changes; FY2025 includes relevant effects of the Activision Blizzard King acquisition. Scope 3 totals are rounded, and the total uses market-based Scope 2.</p>
+
+      <h2>Climate targets and known gaps</h2>
+      <p>The public <a href="https://sciencebasedtargets.org/target-dashboard">SBTi Target Dashboard</a> matches Microsoft unambiguously as SBTi ID <code>40005011</code>, ISIN <code>US5949181045</code>, and LEI <code>INR2EJN1ERAN0W5ZP974</code>. Its company file lists near-term <strong>Targets set</strong>, classified <strong>1.5°C</strong>. Target records published 23 September 2019 say Microsoft will continue sourcing 100% renewable electricity annually through 2030 and reduce Scope 3 emissions intensity per unit of revenue 30% by 2030 from a 2017 base year while avoiding growth in absolute Scope 3 emissions. The same source lists Microsoft's net-zero commitment as <strong>Commitment removed</strong>, with reason <strong>Expired commitment</strong>; it must not be shown as a validated net-zero target.</p>
+      <p>The financial and environmental periods differ by one fiscal year. The environmental figures are company assertions, even where assurance material accompanies the report. This example has no comparable social assessment, OSHA parent-company aggregation, market price, analyst estimate, or scenario-adjusted valuation. Those gaps remain explicit.</p>
+    </article>
+  </main>
+</body>
+</html>
