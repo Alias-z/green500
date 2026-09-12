@@ -1,0 +1,270 @@
+{
+  "company": {
+    "name": "Air Products",
+    "ticker": "APD",
+    "cik": "0000002969",
+    "sector": "Materials"
+  },
+  "environment": {
+    "reporting_year": 2025,
+    "boundary": {
+      "description": "FY2025 financial-control reporting boundary; unconsolidated joint ventures and equity affiliates included in Scope 3 category 15."
+    },
+    "comparability_notes": [
+      "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+      "Missing topics are not zero. No financial demo values have been added.",
+      "Financial-control boundary updated in this report; avoid unadjusted comparisons with earlier inventories. Limited assurance covers Scope 1, 2 and Scope 3 category 3, not all Scope 3."
+    ],
+    "status": "partially_extracted",
+    "source": {
+      "id": 2346,
+      "title": "Air Products 2026 Sustainability Report",
+      "url": "https://www.airproducts.com.cn/-/media/files/en/900/air-products-2026-sustainability-report.pdf",
+      "sha256": "4ed16080c5b2e0c8be8ddb2d43aec6eedf5b206b4ca14d655b0e016beba67d3b",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T15:03:20.942762+00:00"
+    },
+    "extraction": {
+      "method": "reviewed_mapping",
+      "format": "pdf",
+      "review": "PDF values visually checked; HTML statements checked in original content.",
+      "limitations": "Only mapped observations are extracted; unmapped topics remain missing.",
+      "checks": [
+        {
+          "group": "greenhouse_gas",
+          "parts": [
+            "scope_1",
+            "scope_2_market_based",
+            "scope_3_reported_categories"
+          ],
+          "total": "total_market_based",
+          "tolerance": 0,
+          "difference": 0,
+          "passed": true
+        }
+      ]
+    },
+    "greenhouse_gas": {
+      "scope_1": {
+        "value": 24900000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes.",
+        "evidence": {
+          "pdf_page": 66,
+          "source_id": 2346,
+          "raw_value": "24.9",
+          "source_unit": "million tCO2e",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "scope_1",
+          "matched_text": "Scope 1 Direct emissions from owned or controlled sources 24.9"
+        }
+      },
+      "scope_2_location_based": {
+        "value": 18600000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes.",
+        "evidence": {
+          "pdf_page": 66,
+          "source_id": 2346,
+          "raw_value": "18.6",
+          "source_unit": "million tCO2e",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "scope_2_location_based",
+          "matched_text": "Scope 2 (Location-based) 18.6"
+        }
+      },
+      "scope_2_market_based": {
+        "value": 18600000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes.",
+        "evidence": {
+          "pdf_page": 66,
+          "source_id": 2346,
+          "raw_value": "18.6",
+          "source_unit": "million tCO2e",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "scope_2_market_based",
+          "matched_text": "Scope 2 (Market-based) Indirect emissions adjusted for contractual instruments 18.6"
+        }
+      },
+      "scope_3_reported_categories": {
+        "value": 38300000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes.",
+        "evidence": {
+          "pdf_page": 66,
+          "source_id": 2346,
+          "raw_value": "38.3",
+          "source_unit": "million tCO2e",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "scope_3_reported_categories",
+          "matched_text": "Total Scope 3 38.3"
+        }
+      },
+      "total_market_based": {
+        "value": 81800000,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "FY2025 financial-control boundary; rounded to 0.1 million tonnes.",
+        "evidence": {
+          "pdf_page": 66,
+          "source_id": 2346,
+          "raw_value": "81.8",
+          "source_unit": "million tCO2e",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "total_market_based",
+          "matched_text": "Total GHG Emissions Scope 1 + Scope 2 (market-based) + Scope 3 81.8"
+        }
+      }
+    },
+    "energy": {
+      "total_energy": {
+        "value": 76000000,
+        "unit": "MWh",
+        "status": "extracted_and_reviewed",
+        "qualification": "Source decimal point lost in native text; 76.0 TWh verified against rendered table.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "76 0",
+          "source_unit": "TWh",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "total_energy",
+          "matched_text": "Total 76 0"
+        }
+      },
+      "renewable_electricity_share": {
+        "value": 5,
+        "unit": "percent",
+        "status": "extracted_and_reviewed",
+        "qualification": "Active renewable electricity only. GHG trends excluded because the report states the financial-control boundary changed in FY2025.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "5",
+          "source_unit": "percent",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "renewable_electricity_share",
+          "matched_text": "Percent Active Renewable Electricity 5%"
+        }
+      }
+    },
+    "water": {
+      "withdrawal": {
+        "value": 808000000,
+        "unit": "m3",
+        "status": "extracted_and_reviewed",
+        "qualification": "Decimal interpreted from rendered table, not as an integer.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "808 0",
+          "source_unit": "million m3",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "withdrawal",
+          "matched_text": "Total Withdrawals 808 0"
+        }
+      },
+      "consumption": {
+        "value": 90200000,
+        "unit": "m3",
+        "status": "extracted_and_reviewed",
+        "qualification": "Decimal interpreted from rendered table, not as an integer.",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "90 2",
+          "source_unit": "million m3",
+          "scale_factor": 1000000,
+          "year_column": "2025",
+          "label": "consumption",
+          "matched_text": "Total Water Consumption 90 2"
+        }
+      }
+    },
+    "waste_circularity": {
+      "hazardous_waste": {
+        "value": 8180,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "8,180",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "hazardous_waste",
+          "matched_text": "Hazardous Waste 8,180"
+        }
+      },
+      "nonhazardous_waste": {
+        "value": 1484050,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "1,484,050",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "nonhazardous_waste",
+          "matched_text": "Non‑Hazardous Waste 1,484,050"
+        }
+      }
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "nitrogen_oxides": {
+        "value": 1751,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "1,751",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "nitrogen_oxides",
+          "matched_text": "Nitrogen Oxides 1,518 1,751"
+        }
+      },
+      "sulfur_oxides": {
+        "value": 87,
+        "unit": "t",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 54,
+          "source_id": 2346,
+          "raw_value": "87",
+          "source_unit": "t",
+          "scale_factor": 1,
+          "year_column": "2025",
+          "label": "sulfur_oxides",
+          "matched_text": "Sulfur Oxides 80 87"
+        }
+      }
+    }
+  }
+}

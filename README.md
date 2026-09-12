@@ -29,14 +29,58 @@ your portfolio under this new scenario, and why?
 
 ## Project Status
 
-Initial setup. A company materiality reference workbook and CSV exports
-are available in [data/](data/README.md). They cover 503 securities and
-15 sustainability topics using the workbook's VERDEX materiality framework.
+The backend reads PDF or HTML reports and uses a model to extract structured
+observations, checks the response against a JSON schema and source evidence, then
+saves company JSON for the results builder. Scores use extracted observations,
+never materiality ratings. The existing example records retain their original
+reviewed-mapping provenance; they have not been re-extracted by the model yet.
 
-The reference ratings describe topic relevance, rather than company
-sustainability performance. The sustainability definition, performance
-indicators, measurement datasets, scoring methodology, and implementation
-are yet to be selected.
+## Analysis code and prompts
+
+All category instructions are adjacent in [analysis_prompts.py](analysis_prompts.py):
+**environmental**, **social**, and **financial**. The response contract is in
+[analysis_schema.py](analysis_schema.py). Environmental topics also stay together
+inside the environmental prompt.
+
+1. [scripts/read_environment_report.py](scripts/read_environment_report.py) reads all PDF pages or HTML blocks, preserving locators.
+2. [scripts/analyze_report.py](scripts/analyze_report.py) sends chunked evidence and the selected prompt to the OpenAI Responses API with strict JSON Schema output.
+3. It validates company identity, schema, source quotations, locators and numeric conversions. Conflicting observations remain missing with their candidate values preserved. These checks do not prove semantic correctness or independent assurance.
+4. It saves the existing `company` + `environment` / `social` shape. Financial observations are converted and validated against [financial.py](financial.py), with evidence retained separately.
+5. [scripts/build_results.py](scripts/build_results.py) combines company records and invokes [scripts/score_environment.py](scripts/score_environment.py). The scoring methodology is documented in [data/ENVIRONMENT_SCORING.md](data/ENVIRONMENT_SCORING.md).
+
+Install dependencies, then export `OPENAI_API_KEY` and `OPENAI_MODEL` in your shell.
+Use a model available to your account that supports Structured Outputs. No key is
+stored in the repository; `.env.example` lists configuration names, and `.env`
+files are not loaded automatically.
+
+```sh
+uv pip install --python .venv/bin/python -r requirements-environment.txt
+.venv/bin/python scripts/analyze_report.py path/to/report.pdf \
+  --category environmental --company "Example Company" --ticker EXAMPLE \
+  --source-url https://example.com/report.pdf \
+  --output data/report_examples/example/results.json --rebuild-results
+```
+
+Use an existing ticker from the company reference list when rebuilding the root
+results. Use `--year 2025` to select a period explicitly. The same command accepts
+HTML and `--category social` or `--category financial`. The convenience command
+`scripts/extract_environment_results.py` defaults to environmental analysis.
+No company-specific extraction profile is required.
+
+Model calls are required for extraction. Missing credentials, refusals, incomplete
+responses and failed validation produce errors before replacing the company file.
+The text reader does not OCR scanned PDFs; documents without readable text fail
+explicitly. Partially readable PDFs can have missing observations. Large reports
+are processed in multiple calls, including complete HTML text for div-based filings.
+Changed/ambiguous boundaries require interpretation; machine validation alone
+cannot certify that the model picked the right table column or reporting scope.
+
+For a dry run that only prepares messages and the schema, use
+`scripts/prepare_analysis.py`. The historical rule-based extractor remains under
+`scripts/replay_environment_mappings.py` solely to reproduce the original examples.
+It is not the default analysis path.
+
+The API integration follows the [official Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs).
 
 ## Data
 

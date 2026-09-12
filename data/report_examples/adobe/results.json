@@ -1,0 +1,138 @@
+{
+  "company": {
+    "name": "Adobe Inc.",
+    "ticker": "ADBE",
+    "cik": "0000796343",
+    "sector": "Information Technology"
+  },
+  "environment": {
+    "reporting_year": 2024,
+    "boundary": {
+      "description": "CDP disclosure uses the same reporting boundary as financial statements (PDF page 4)."
+    },
+    "comparability_notes": [
+      "Latest source stored in the inspected catalog; worldwide latest availability has not been established.",
+      "Missing topics are not zero. No financial demo values have been added.",
+      "2025 questionnaire reports a fiscal year ending November 29, 2024 (PDF page 4); not calendar 2025 data."
+    ],
+    "period_end": "2024-11-29",
+    "status": "partially_extracted",
+    "source": {
+      "id": 2275,
+      "title": "Adobe 2025 CDP Corporate Questionnaire Response",
+      "url": "https://www.adobe.com/cc-shared/assets/pdf/corporate-responsibility/adbe-2025-cdp-response.pdf",
+      "sha256": "cfc2953b6cbcf0d3ee3283cad55ad02b38b887e5139a15104dc696503452d283",
+      "content_type": "application/pdf",
+      "catalog_last_checked_at": "2026-09-12T14:27:43.905391+00:00"
+    },
+    "extraction": {
+      "method": "reviewed_mapping",
+      "format": "pdf",
+      "review": "PDF values visually checked; HTML statements checked in original content.",
+      "limitations": "Only mapped observations are extracted; unmapped topics remain missing.",
+      "checks": []
+    },
+    "greenhouse_gas": {
+      "scope_1": {
+        "value": 7218,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 101,
+          "source_id": 2275,
+          "raw_value": "7218",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_1",
+          "matched_text": "(7.6.1) Gross global Scope 1 emissions (metric tons CO2e)\n7218"
+        }
+      },
+      "scope_2_location_based": {
+        "value": 63296,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 102,
+          "source_id": 2275,
+          "raw_value": "63296",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_2_location_based",
+          "matched_text": "Reporting year 63296 19602"
+        }
+      },
+      "scope_2_market_based": {
+        "value": 19602,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "",
+        "evidence": {
+          "pdf_page": 102,
+          "source_id": 2275,
+          "raw_value": "19602",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_2_market_based",
+          "matched_text": "Reporting year 63296 19602"
+        }
+      },
+      "scope_3_category_1": {
+        "value": 409284,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Purchased goods and services only; not total Scope 3.",
+        "evidence": {
+          "pdf_page": 102,
+          "source_id": 2275,
+          "raw_value": "409284",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2024",
+          "label": "scope_3_category_1",
+          "matched_text": "(7.8.2) Emissions in reporting year (metric tons CO2e)\n409284"
+        }
+      },
+      "scope_1_2_market_based_2023": {
+        "value": 30599,
+        "unit": "tCO2e",
+        "status": "extracted_and_reviewed",
+        "qualification": "Prior-period value from the same report, retained for the provisional trend calculation.",
+        "evidence": {
+          "pdf_page": 116,
+          "source_id": 2275,
+          "raw_value": "30,599",
+          "source_unit": "tCO2e",
+          "scale_factor": 1,
+          "year_column": "2023",
+          "label": "scope_1_2_market_based_2023",
+          "matched_text": "FY2023 scope 1 and 2 market-based emissions of 30,599 MT"
+        }
+      }
+    },
+    "energy": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "water": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "waste_circularity": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "value": null,
+      "status": "not_extracted"
+    }
+  }
+}

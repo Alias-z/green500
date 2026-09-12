@@ -1,5 +1,7 @@
 # Environmental extraction: site audit and Airbnb pilot
 
+Follow-up: [10-company PDF/HTML batch and website integration](ENVIRONMENT_BATCH.md).
+
 Inspected 12 September 2026. This is an environmental source audit and a tested
 Airbnb extraction pilot, not a completed extraction for all 500 companies.
 

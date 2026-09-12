@@ -370,5 +370,15 @@
       "review": "Table 1 and Appendix A checked against rendered pages; totals reconciled. Energy claim read from page 5.",
       "coverage": "Airbnb pilot; remaining environmental topics require further extraction and review."
     }
+  },
+  "data_provenance": {
+    "financial_and_workforce_geography_sections": {
+      "status": "unverified_sample",
+      "description": "Values copied from the JSON format example supplied in the conversation; not extracted or verified financial statements."
+    },
+    "environment": {
+      "status": "report_extraction",
+      "description": "Extracted from the cited Airbnb sustainability report."
+    }
   }
 }
