@@ -29,8 +29,22 @@ your portfolio under this new scenario, and why?
 
 ## Project Status
 
-Initial setup. The sustainability definition, indicators, dataset,
-methodology, and implementation are yet to be selected.
+Initial setup. A company materiality reference workbook and CSV exports
+are available in [data/](data/README.md). They cover 503 securities and
+15 sustainability topics using the workbook's VERDEX materiality framework.
+
+The reference ratings describe topic relevance, rather than company
+sustainability performance. The sustainability definition, performance
+indicators, measurement datasets, scoring methodology, and implementation
+are yet to be selected.
+
+## Data
+
+- [Company materiality profiles](data/reference/company_materiality.csv)
+- [Topic definitions and example metrics](data/reference/topic_definitions.csv)
+- [Source references](data/reference/sources.csv)
+- [Original workbook notes](data/reference/workbook_readme.csv)
+- [Data documentation and original Numbers file](data/README.md)
 
 ## Judging Criteria
 

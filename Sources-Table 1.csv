@@ -1,4 +1,0 @@
-Source,Publisher/Host,URL,Use,
-Current S&P 500 constituent list,GitHub daily public snapshot sourced from Wikipedia,https://raw.githubusercontent.com/1kbgz/crowdsource-datasets/main/sp500/constituents.csv,"Ticker, company, GICS sector, GICS sub-industry",
-GICS overview,S&P Dow Jones Indices,https://www.spglobal.com/spdji/en/landing/topic/gics/,GICS taxonomy context,
-GRI Standards,Global Reporting Initiative,https://www.globalreporting.org/how-to-use-the-gri-standards/gri-standards-english-language/,Public sustainability-topic and impact-reporting reference,
