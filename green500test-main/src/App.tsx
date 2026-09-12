@@ -1,11 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { METRIC_LABELS, type Company, type Sector } from "./sp500";
+import { type Company, type Sector } from "./sp500";
 import { loadResults } from "./results";
 import EnvironmentalResults from "./components/EnvironmentalResults";
-import { DEFAULT_WEIGHTS, scoreAndRank, type ScoredCompany, type SustainabilityWeights } from "./scoring";
-import WeightControls from "./components/WeightControls";
-import PortfolioAllocator from "./components/PortfolioAllocator";
-import NetZeroFund from "./components/NetZeroFund";
 import AppToolbar from "./components/AppToolbar";
 
 type Tab = "All" | Sector;
@@ -16,11 +12,6 @@ const SECTOR_COLORS: Record<Sector, string> = {
   "Health Care": "#79ab52", Industrials: "#af52de", "Information Technology": "#5ac8fa",
   Materials: "#8e8e93", "Real Estate": "#ff2d55", Utilities: "#30b0c7",
 };
-
-const SCORE_COLOR = (s: number) =>
-  s >= 75 ? "#79ab52" : s >= 50 ? "#79ab52" : s >= 30 ? "#ff9f0a" : "#ff453a";
-
-const INDICATORS = METRIC_LABELS.map((label, index) => ({ label, index }));
 
 function ExpandChevron({ open }: { open: boolean }) {
   return (
@@ -68,54 +59,14 @@ function CompanyLogo({ name, ticker, size = 32 }: { name: string; ticker: string
   );
 }
 
-function MiniBar({ value, color }: { value: number; color: string }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className="flex-1 rounded-full overflow-hidden" style={{ height: 3, background: "#e8e8ed" }}>
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${value}%`, background: color }} />
-      </div>
-      <span className="text-[11px] tabular-nums" style={{ color: "#86868b", minWidth: 22, textAlign: "right", fontFamily: "var(--font-sans)" }}>
-        {value}
-      </span>
-    </div>
-  );
+function ExpandedRow({ company }: { company: Company }) {
+  return <tr className="row-expand"><td colSpan={8} className="px-4 pb-4 pt-0">
+    <EnvironmentalResults company={company} />
+  </td></tr>;
 }
 
-function IndicatorBar({ label, raw }: { label: string; raw: number }) {
-  const value = Math.round((raw / 3) * 100);
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between items-center">
-        <span className="text-[12px]" style={{ color: "#636366" }}>{label}</span>
-        <span className="text-[11px] px-1.5 py-px rounded-full" style={{ background: "rgba(0,113,227,0.08)", color: "#0071e3", fontFamily: "var(--font-sans)" }}>{raw}/3</span>
-      </div>
-      <MiniBar value={value} color="#0071e3" />
-    </div>
-  );
-}
-
-function ExpandedRow({ company }: { company: ScoredCompany }) {
-  return (
-    <tr className="row-expand">
-      <td colSpan={8} className="px-4 pb-4 pt-0">
-        <EnvironmentalResults company={company} />
-        <p className="mx-10 mb-2 text-xs text-gray-600">Materiality ratings below indicate topic relevance, not company performance.</p>
-        <div
-          className="rounded-[14px] p-4 grid gap-3 mx-10"
-          style={{
-            background: "#ffffff",
-            border: "0.5px solid rgba(0,0,0,0.08)",
-            gridTemplateColumns: "1fr 1fr",
-            columnGap: 24,
-          }}
-        >
-          {INDICATORS.map((indicator) => (
-            <IndicatorBar key={indicator.label} label={indicator.label} raw={company.metrics[indicator.index]} />
-          ))}
-        </div>
-      </td>
-    </tr>
-  );
+function Missing() {
+  return <span className="text-xs text-gray-500">Missing</span>;
 }
 
 const PAGE_SIZE = 20;
@@ -142,34 +93,21 @@ export default function App() {
   const [sortKey, setSortKey] = useState<"rank" | "score" | "name">("rank");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
-  const [weights, setWeights] = useState<SustainabilityWeights>(DEFAULT_WEIGHTS);
   const [view, setView] = useState<"dashboard" | "portfolio" | "netzero">("dashboard");
 
   const scored = useMemo(() => {
     const sectorCompanies = activeTab === "All" ? companies : companies.filter(c => c.sector === activeTab);
     const query = searchQuery.trim().toLocaleLowerCase();
     const filtered = query ? sectorCompanies.filter(c => c.name.toLocaleLowerCase().includes(query) || c.ticker.toLocaleLowerCase().includes(query)) : sectorCompanies;
-    const ranked = scoreAndRank(filtered, weights);
-    if (activeTab !== "All") return ranked;
-    return [...ranked]
-      .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
-      .map((company, index, companies) => ({
-        ...company,
-        sectorRank: index + 1,
-        sectorCount: companies.length,
-      }));
-  }, [activeTab, searchQuery, weights, companies]);
+    return filtered;
+  }, [activeTab, searchQuery, companies]);
 
   const sorted = useMemo(() => {
-    const arr = [...scored];
-    arr.sort((a, b) => {
-      const cmp =
-        sortKey === "rank" ? a.sectorRank - b.sectorRank :
-        sortKey === "score" ? b.score - a.score :
-        a.name.localeCompare(b.name);
-      return sortDir === "asc" ? cmp : -cmp;
+    // No performance scores exist in the current results; never rank materiality.
+    return [...scored].sort((a, b) => {
+      const cmp = a.name.localeCompare(b.name);
+      return sortKey === "name" && sortDir === "desc" ? -cmp : cmp;
     });
-    return arr;
   }, [scored, sortKey, sortDir]);
 
   const pageData = useMemo(() => sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE), [sorted, page]);
@@ -215,16 +153,16 @@ export default function App() {
 
       {loadState === "loading" && <p role="status" className="apple-shell py-6">Loading company results…</p>}
       {loadState === "error" && <div role="alert" className="apple-shell py-6"><p>{loadError}</p><button onClick={() => setReload(value => value + 1)}>Retry loading results</button></div>}
-      {loadState === "ready" && <p className="apple-shell mt-4 text-sm text-gray-600">{companies.filter(c => c.environment && c.environment.status !== "not_extracted").length} companies with environmental results. Expand a company to view reported values and sources. Rankings use materiality ratings, not measured sustainability performance.</p>}
-      {view !== "netzero" && loadState === "ready" && <WeightControls weights={weights} onChange={setWeights} />}
+      {loadState === "ready" && <p className="apple-shell mt-4 text-sm text-gray-600">{companies.filter(c => c.environment && c.environment.status !== "not_extracted").length} companies with environmental results. Expand a company to view reported values and sources. Performance scores are missing; reported environmental measurements are available in expanded rows.</p>}
+
 
       {/* Table */}
       <div className={`${view === "dashboard" ? "block" : "hidden"} apple-shell mt-6 mb-10 rounded-[22px] overflow-hidden`} style={{ background: "#ffffff", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06)" }}>
         <div className="overflow-x-auto"><table className="w-full table-fixed border-collapse text-sm" style={{ minWidth: 1100 }}><colgroup><col style={{width:"6%"}}/><col style={{width:"20%"}}/><col style={{width:"16%"}}/><col style={{width:"20%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"2%"}}/></colgroup>
           <thead>
             <tr style={{ borderBottom: "0.5px solid rgba(0,0,0,0.08)", background: "#fafafa" }}>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", width: 70 }} onClick={() => handleSort("rank")}>
-                RANK <SortArrow col="rank" />
+              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", width: 70 }} >
+                RANK
               </th>
               <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }} onClick={() => handleSort("name")}>
                 COMPANY <SortArrow col="name" />
@@ -232,8 +170,8 @@ export default function App() {
               <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" }}>
                 SECTOR
               </th>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 180 }} onClick={() => handleSort("score")}>
-                SUSTAINABILITY SCORE <SortArrow col="score" />
+              <th className="text-left px-4 py-3 cursor-pointer select-none" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 180 }} >
+                SUSTAINABILITY SCORE
               </th>
               <th className="text-left px-4 py-3" style={{ color: "#86868b", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", minWidth: 100 }}>
                 ENVIRONMENTAL
@@ -251,10 +189,6 @@ export default function App() {
             {pageData.map((company) => {
               const isOpen = expanded.has(company.id);
               const sColor = "#0071e3";
-              const scoreColor = "#79ab52";
-              const emAvg = Math.round((company.metrics.slice(0, 6).reduce((sum, value) => sum + value, 0) / 18) * 100);
-              const socialAvg = Math.round((company.metrics.slice(6, 12).reduce((sum, value) => sum + value, 0) / 18) * 100);
-              const financialAvg = Math.round((company.metrics.slice(12, 15).reduce((sum, value) => sum + value, 0) / 9) * 100);
 
               return [
                 <tr
@@ -267,14 +201,7 @@ export default function App() {
                 >
                   {/* Rank */}
                   <td className="px-4 py-3">
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-[12px]" style={{ color: "#1d1d1f", fontFamily: "var(--font-sans)" }}>
-                        {company.sectorRank}
-                      </span>
-                      <span className="text-[11px]" style={{ color: "#c7c7cc", fontFamily: "var(--font-sans)" }}>
-                        /{company.sectorCount}
-                      </span>
-                    </div>
+                    <Missing />
                   </td>
 
                   {/* Company */}
@@ -298,37 +225,15 @@ export default function App() {
                     </span>
                   </td>
 
-                  {/* Score */}
+                  {/* Only reported results belong here; materiality is never a score. */}
+                  <td className="px-4 py-3"><Missing /></td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[16px] font-semibold tabular-nums" style={{ color: scoreColor, minWidth: 36, fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif", letterSpacing: "-0.02em" }}>
-                        {company.avgMateriality.toFixed(2)}
-                      </span>
-                      <div className="flex-1" style={{ minWidth: 80 }}>
-                        <div className="rounded-full" style={{ height: 4, background: "#f2f2f7", minWidth: 80 }}>
-                          <div
-                            className="rounded-full transition-all duration-500"
-                            style={{ height: 4, width: `${company.score}%`, background: scoreColor }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <Missing />
+                    {company.environment && company.environment.status !== "not_extracted" &&
+                      <span className="block text-xs text-blue-700 mt-1">{company.environment.status === "target_only" ? "View reported target" : "View reported data"}</span>}
                   </td>
-
-                  {/* Emissions avg */}
-                  <td className="px-4 py-3" style={{ minWidth: 100 }}>
-                    <MiniBar value={emAvg} color={SCORE_COLOR(emAvg)} />
-                  </td>
-
-                  {/* Social avg */}
-                  <td className="px-4 py-3" style={{ minWidth: 100 }}>
-                    <MiniBar value={socialAvg} color={SCORE_COLOR(socialAvg)} />
-                  </td>
-
-                  {/* Financial avg */}
-                  <td className="px-4 py-3" style={{ minWidth: 100 }}>
-                    <MiniBar value={financialAvg} color={SCORE_COLOR(financialAvg)} />
-                  </td>
+                  <td className="px-4 py-3"><Missing /></td>
+                  <td className="px-4 py-3"><Missing /></td>
 
                   {/* Expand chevron */}
                   <td className="pr-4 py-3 text-center">
@@ -383,8 +288,8 @@ export default function App() {
           </span>
         </div>
       </div>
-      {view === "portfolio" && loadState === "ready" && companies.length > 0 && <PortfolioAllocator companies={companies} weights={weights} />}
-      {view === "netzero" && loadState === "ready" && companies.length > 0 && <NetZeroFund companies={companies} />}
+      {view === "portfolio" && loadState === "ready" && <p className="apple-shell py-6">Portfolio scores and allocations are missing. Calculated performance scores are required.</p>}
+      {view === "netzero" && loadState === "ready" && <p className="apple-shell py-6">Net-zero analysis is missing. Verified performance inputs are required.</p>}
     </div>
   );
 }
