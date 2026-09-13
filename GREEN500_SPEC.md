@@ -29,6 +29,7 @@ Updated: 2026-09-13
 | Fixed original-report extraction | Extract saved category reports into versioned fixed records without reading earlier model output | `green500/processing/fixed_report_batch.py`, `green500/processing/fixed_*_profile.py` |
 | Training-data snapshots | Export row-aligned predictors, labels, companies and missingness metadata for nonlinear model work | `green500/training_data.py` |
 | Score-model pipeline | Audit dated inputs, build assessment-cycle datasets, train EBM and CatBoost models, and run saved-model predictions and contribution-based rankings | `green500/ml/__main__.py` |
+| Model company comparison | Publish verified report snapshots to PostgreSQL and serve common scenarios, grouped active measurements, personalized rankings and constrained fund allocations | `green500/model_comparison.py`, `green500/model_comparison_store.py`, `green500/ml/serving.py`, `green500/ml/portfolio.py`, `green500/static/portfolio.ts` |
 
 ### Data and publication
 
@@ -175,6 +176,90 @@ unit multipliers reproduce the raw EBM prediction. A category with no active mod
 model contribution and an explicit exclusion marker.
 
 ### Operations
+
+The authenticated `/portfolio` comparison data APIs use an explicitly published, immutable
+company snapshot. The source homepage provides a comparison entry visible on desktop and
+mobile. Application HTML responses prohibit storage, and the web build stamps JavaScript
+and CSS references with their content hashes so browser and CDN caches cannot retain a
+previous asset version under a newly built page.
+
+The `green500.model_comparison publish` command verifies saved models and
+materializes dated source rows, active target-specific measurements, both model estimates and
+signed EBM contributions in PostgreSQL in one transaction. Snapshot identity binds the verified
+model manifest, source rows and materialized evaluations. Installed model artifacts live in
+`data/ml/comparison_runs/`; publication retains provider-rights and evaluation limitations.
+This comparison publication is separate from the training pipeline's latest-run pointer.
+HTTP requests do not train models, extract reports or publish snapshots. Scenario inference
+loads a verified saved model bundle once per process and uses bounded concurrent requests.
+
+The `/api/model-comparison/run`, `/demos`, `/companies`, `/compare`, `/target-suggestions`, `/rank`,
+`/renewable-scenario` and `/portfolio` endpoints share viewer authentication. Browser POST requests require the existing same-origin check. PostgreSQL filtering
+accepts the selected target's active fields. Ordering defaults to case-insensitive company name
+A–Z with CIK as a stable tie-breaker; explicit sorting also accepts active fields and model estimates. Missing values
+remain null and sort last. A submitted snapshot identity cannot silently move to newer inputs.
+Evidence file links require an exact company, document identifier and content-hash match.
+
+The comparison page presents four focused demonstrations, one at a time. The first compares two
+selectable companies and displays only their EBM and CatBoost estimates, one grouped parameter
+selector, a company scope and two reviewed large-change actions. Published presets bind company
+pairs, parameters and action magnitudes that produced visible saved-model responses when verified.
+Each click begins from the displayed scenario value. Percentage fields use visible `%` changes,
+steps, years move by decade steps and other numeric values move by large relative steps. If a
+standard step produces less than a visible model change, the browser expands the same direction
+up to the semantic bound. The displayed parameter value and both estimates update after every
+click; reset restores the published values. Detailed parameter values and evidence remain
+collapsed. The second demonstration accepts a
+company, model family and desired score. It searches one observed active primitive at a time using
+current company values and values inside the saved training range, runs both saved models on every
+tested scenario, and reports the closest measured options. Visible results emphasize the required
+percentage change and selected-model score change. Raw values, the
+second model, search range and warnings remain collapsed. It never presents a model sensitivity
+as a causal action or guarantees that a requested estimate is reachable.
+
+The third demonstration accepts any finite environmental multiplier from zero to three. Every
+input change reweights stored signed EBM contributions for all 500 published companies and returns
+the complete updated ranking. It does not deserialize or rerun either fitted model. A multiplier of
+one reproduces the raw EBM order. The fourth demonstration loads all 500 CSA EBM rows when opened.
+It accepts any positive finite relative renewable-electricity increase per click and compounds that
+multiplier from the displayed scenario. The action remains available for repeated clicks. Observed
+values cap at 100 percent and missing values remain missing. Each click updates every scenario
+score, score delta, original and scenario rank and rank movement; negative score changes are
+highlighted. Reset reproduces the published score and rank order.
+
+The renewable demonstration groups original and scenario score sums by sector. Each scenario
+sector share equals that sector's scenario score sum divided by the scenario score sum across all
+published companies. The main view shows the complete company ranking. `Compute portfolio` opens a
+modal pie chart with those sector percentages, share direction in `%` and the proportional
+allocation of $1 billion. Sector amounts reconcile to exactly $1 billion. The former Example
+navigation item and `/reports/microsoft/` page are no longer served.
+
+Visible demonstration text is limited to inputs, results and decision-critical differences.
+Target-search method details, model limitations and evidence remain inside explicitly opened
+details. The renewable result highlights company score and rank changes and sector direction.
+
+Comparison fields, filters and scenario controls use the financial, social, environmental,
+climate-target and financial-target groups with readable names and canonical units. Company
+context is separate. Inactive groups remain explicitly excluded. Common scenario operations
+are absolute addition, relative percentage change and setting a value. They apply to active
+primitive measurements on copies of the same published rows; fixed context and derived fields
+cannot be directly edited. Missing baselines cannot receive relative changes. Dependent ratios
+are recomputed with the existing unit and period compatibility rules. Hypothetical values retain
+their original evidence and are labeled as scenarios.
+
+Original, scenario and personalized ranks use the same company cohort. EBM category multipliers
+are finite values from zero to three; fixed context remains unchanged, and unit multipliers
+reproduce the raw EBM estimate. Deterministic interpretation text uses the computed input changes,
+model differences, signed contributions and cohort ranks. It describes model sensitivity and
+retains missing-input and training-range warnings.
+
+The fund demonstration uses the sustainability models as eligibility constraints under the
+rapid net-zero scenario. Within the sustainability-eligible cohort, a separate transparent
+financial-resilience objective combines cohort percentile ranks for operating margin, operating
+cash-flow margin and inverse debt-to-assets. At least two observed components are required and
+available component weights are normalized. The optimizer greedily maximizes that linear proxy
+under explicit company-count, company-weight, industry-weight and input-coverage constraints.
+This proxy describes current profitability, cash flow and leverage; it does not predict profit or
+investment return. Infeasible constraints leave cash unallocated and are never silently relaxed.
 
 The viewer catalog separates financial reports, environmental reports, social and employee disclosures, financial targets and climate targets. Categories come from reviewed source profiles; a discovered URL does not count as a downloaded report. SEC Company Facts and SBTi datasets remain separately labeled. Viewer sessions grant read access to registered originals only; administrative actions and model receipts require separate credentials. Acquired HTML opens as inert text, while PDFs can open inline. The single FastAPI origin serves the page, API and original-file routes behind the configured reverse proxy.
 

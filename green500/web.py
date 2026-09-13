@@ -25,6 +25,7 @@ from green500 import (
     view_access,
 )
 from green500.config import load_settings
+from green500.model_comparison import router as model_comparison_router
 from green500.storage import read_bytes, save_json, validate_public_url
 from green500.worker import worker_loop
 
@@ -51,6 +52,14 @@ app = FastAPI(title="Green500", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.include_router(view_access.router)
 
+app.include_router(model_comparison_router)
+
+
+@app.get("/portfolio")
+def portfolio_page():
+    """Serve the comparison page; its data APIs require a viewer session."""
+    return FileResponse(STATIC_DIR / "portfolio.html")
+
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
@@ -62,7 +71,7 @@ def favicon():
 async def prevent_private_response_caching(request: Request, call_next):
     """Keep password-protected data out of shared reverse-proxy caches."""
     response = await call_next(request)
-    if request.url.path.startswith("/api/"):
+    if request.url.path.startswith("/api/") or request.url.path in {"/", "/portfolio"}:
         response.headers["Cache-Control"] = "private, no-store"
     if request.url.path == "/api/catalog" and response.status_code == 200:
         view_access.refresh_session_cookie(response, request)
@@ -89,14 +98,6 @@ def authorize(request: Request, authorization: str = Header(default="")) -> None
 def index():
     """Serve the company table without exposing configuration secrets."""
     return FileResponse(STATIC_DIR / "index.html")
-
-
-@app.get("/reports/microsoft/", dependencies=[Depends(view_access.authorize_view)])
-def microsoft_example():
-    """Publish a reviewed example containing public source facts."""
-    return FileResponse(
-        STATIC_DIR.parents[1] / "data/report_examples/microsoft/index.html"
-    )
 
 
 @app.get("/docs/data-design", dependencies=[Depends(view_access.authorize_view)])

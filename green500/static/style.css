@@ -186,6 +186,7 @@ dialog::backdrop { background: rgb(18 27 22 / 48%); backdrop-filter: blur(2px); 
 @media (max-width: 700px) {
   .site-header { padding: 9px 12px; }
   .brand p, nav a { display: none; }
+  nav a.comparison-nav { display: inline; }
   .live-counts { gap: 11px; }
   main { padding: 13px 10px 32px; }
   .toolbar { grid-template-columns: 1fr; }

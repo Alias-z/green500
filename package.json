@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "npm run build",
-    "build": "tsc green500/static/app.ts --target ES2021 --lib ES2021,DOM --strict --noEmitOnError --outDir green500/static"
+    "build": "tsc green500/static/app.ts green500/static/portfolio.ts --target ES2021 --module ES2020 --lib ES2021,DOM --strict --noEmitOnError --outDir green500/static && node scripts/version_web_assets.mjs"
   },
   "keywords": [],
   "author": "",

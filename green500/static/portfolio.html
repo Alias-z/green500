@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Green500 · Model demos</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4935'/%3E%3Ctext x='19' y='47' font-size='46' font-family='sans-serif' font-weight='700' fill='%23e3f0cf'%3Eg%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/portfolio.css?v=708055d12b736f30">
+</head>
+<body>
+  <section id="login-view" class="login-view" hidden>
+    <form id="login-form" class="login-card">
+      <span class="brand-mark" aria-hidden="true">g</span>
+      <h1>Green500</h1>
+      <label for="viewer-password">Viewer password</label>
+      <input id="viewer-password" name="password" type="password" autocomplete="current-password" required autofocus>
+      <button type="submit">Sign in</button>
+      <p id="login-error" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="app-view" hidden>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Green500 sources"><span class="brand-mark" aria-hidden="true">g</span><strong>Green500</strong></a>
+      <span id="run-summary" class="run-summary">Loading models…</span>
+      <nav aria-label="Project links"><a class="active" href="/portfolio">Demos</a><a href="/">Sources</a><button id="logout" class="link-button" type="button">Log out</button></nav>
+    </header>
+
+    <main>
+      <p id="page-error" class="message error" role="alert"></p>
+      <p id="page-status" class="message" role="status"></p>
+
+      <div class="demo-tabs" role="tablist" aria-label="Model demonstrations">
+        <button id="demo-tab-compare" role="tab" aria-controls="demo-compare" aria-selected="true" type="button"><span>1</span> Compare two</button>
+        <button id="demo-tab-reach" role="tab" aria-controls="demo-reach" aria-selected="false" type="button"><span>2</span> Reach a score</button>
+        <button id="demo-tab-ranking" role="tab" aria-controls="demo-ranking" aria-selected="false" type="button"><span>3</span> Environment ranking</button>
+        <button id="demo-tab-fund" role="tab" aria-controls="demo-fund" aria-selected="false" type="button"><span>4</span> $1B case</button>
+      </div>
+
+      <section id="demo-compare" class="demo-panel" role="tabpanel" aria-labelledby="demo-tab-compare">
+        <header class="demo-heading"><h1>Compare two companies</h1><label><span>Preset</span><select id="pair-preset"></select></label></header>
+        <div class="compare-controls">
+          <label><span>Company A</span><select id="compare-company-a"></select></label>
+          <label><span>Company B</span><select id="compare-company-b"></select></label>
+          <label><span>Target</span><select id="compare-target"><option value="esg">ESG</option><option value="csa">CSA</option></select></label>
+        </div>
+        <div id="compare-results" class="score-pair" aria-live="polite"></div>
+        <div class="scenario-bar">
+          <label class="parameter"><span>Parameter</span><select id="compare-parameter"></select></label>
+          <label><span>Apply to</span><select id="compare-apply-to"><option value="both">Both companies</option><option value="a">Company A</option><option value="b">Company B</option></select></label>
+          <button id="compare-decrease" class="change-button decrease" type="button"><strong>Decrease</strong><small></small></button>
+          <button id="compare-increase" class="change-button increase" type="button"><strong>Increase</strong><small></small></button>
+          <button id="compare-reset" class="reset-button" type="button">Reset</button>
+        </div>
+        <details id="compare-details" class="details-block"><summary>Parameter values and evidence</summary><div id="compare-detail-content" class="detail-columns"></div></details>
+      </section>
+
+      <section id="demo-reach" class="demo-panel" role="tabpanel" aria-labelledby="demo-tab-reach" hidden>
+        <header class="demo-heading"><h1>Reach a score</h1></header>
+        <div class="reach-controls">
+          <label><span>Company</span><select id="reach-company"></select></label>
+          <label><span>Target</span><select id="reach-target"><option value="esg">ESG</option><option value="csa">CSA</option></select></label>
+          <label><span>Model</span><select id="reach-model"><option value="ebm">EBM</option><option value="catboost">CatBoost</option></select></label>
+          <label><span>Desired score</span><input id="reach-score" type="number" min="0" max="100" step="0.1"></label>
+          <button id="reach-find" type="button">Find one-parameter options</button>
+        </div>
+        <p id="reach-disclosure" class="note"></p>
+        <div id="reach-suggestions" class="suggestion-list" aria-live="polite"></div>
+      </section>
+
+      <section id="demo-ranking" class="demo-panel" role="tabpanel" aria-labelledby="demo-tab-ranking" hidden>
+        <header class="demo-heading"><h1>Environment-first ranking</h1></header>
+        <div class="ranking-controls">
+          <label><span>Environmental weight</span><input id="ranking-weight" type="number" min="0" max="3" step="0.1" value="3" inputmode="decimal"></label>
+          <strong id="ranking-count">500 companies</strong>
+        </div>
+        <div id="ranking-focus" class="ranking-focus" aria-live="polite"></div>
+        <div id="ranking-results" class="compact-table" aria-live="polite"></div>
+      </section>
+
+      <section id="demo-fund" class="demo-panel" role="tabpanel" aria-labelledby="demo-tab-fund" hidden>
+        <header class="demo-heading"><h1>$1B renewable-energy scenario</h1><strong class="model-tag">CSA · EBM</strong></header>
+        <div class="renewable-controls">
+          <label><span>Increase per click (%)</span><input id="renewable-step" type="number" step="any" value="10" inputmode="decimal"></label>
+          <button id="renewable-increase" type="button">Increase renewable electricity</button>
+          <button id="renewable-reset" class="reset-button" type="button">Reset</button>
+          <div><span>Cumulative increase</span><strong id="renewable-cumulative">0%</strong></div>
+          <strong id="renewable-company-count">500 companies</strong>
+        </div>
+        <div class="renewable-ranking-heading">
+          <h2>500-company ranking</h2>
+          <button id="compute-portfolio" type="button" disabled>Compute portfolio</button>
+        </div>
+        <div id="renewable-ranking" class="renewable-table"><table><thead><tr><th>New rank</th><th>Company</th><th>Renewable</th><th>Score Δ</th><th>Move</th></tr></thead><tbody></tbody></table></div>
+        <details id="renewable-details" class="renewable-details"><summary>Details</summary><div></div></details>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="evidence-dialog" aria-labelledby="evidence-title">
+    <header><div><span id="evidence-company"></span><h2 id="evidence-title">Evidence</h2></div><button id="evidence-close" class="icon-button" type="button" aria-label="Close evidence">×</button></header>
+    <div id="evidence-body" class="dialog-body"></div>
+  </dialog>
+
+  <dialog id="portfolio-dialog" class="portfolio-dialog" aria-labelledby="portfolio-title">
+    <header><div><span>$1 billion allocation</span><h2 id="portfolio-title">Sector portfolio</h2></div><button id="portfolio-close" class="icon-button" type="button" aria-label="Close portfolio">×</button></header>
+    <div class="dialog-body"><div id="sector-shifts" class="sector-chart" aria-live="polite"></div></div>
+  </dialog>
+
+  <script src="/static/portfolio.js?v=a896734c564d667c" type="module"></script>
+</body>
+</html>

@@ -126,7 +126,7 @@ def company_catalog(settings):
     """Return one compact company row and collection progress for the report page."""
     with db.connect(settings) as conn:
         companies = conn.execute(
-            "SELECT cik,name,symbols,sector FROM companies WHERE is_current ORDER BY name"
+            'SELECT cik,name,symbols,sector FROM companies WHERE is_current ORDER BY LOWER(name) COLLATE "C",cik'
         ).fetchall()
         sources = [
             describe_source(row)
