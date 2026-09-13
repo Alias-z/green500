@@ -22,6 +22,13 @@ PDF processing preserves page and line positions from readable text. Fully image
 
 Local source storage must be backed up together with PostgreSQL. Placement on an existing PostgreSQL server does not add this application's database to that server's backup policy. Credentials stay in the ignored local environment file. The Ops server binds to loopback by default and requires a configured token when exposed elsewhere.
 
+## Reference artifacts
+
+The earlier root-level analysis scripts and example result files remain available for
+reproducibility. The standalone runtime uses `green500/processing/` as its extraction path.
+Environmental batch, extraction and scoring notes are under `data/`, and reviewed company
+examples are under `data/report_examples/`.
+
 ## Origin
 
 The acquisition receipt, bounded PDF parsing, PostgreSQL transaction and immutable source-hash patterns were adapted from granny_data. [MIGRATION.md](MIGRATION.md) records their source files and boundaries. Green500 keeps its own data model, direct model client and one-table interface.

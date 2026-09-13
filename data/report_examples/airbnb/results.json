@@ -1,0 +1,384 @@
+{
+  "company": {
+    "name": "Airbnb, Inc.",
+    "ticker": "ABNB",
+    "fiscal_year": 2025,
+    "currency": "USD",
+    "cik": "0001559720"
+  },
+  "income_statement": {
+    "revenue": 12241000000,
+    "cost_of_revenue": 2086000000,
+    "operations_support": 1327000000,
+    "product_development": 2354000000,
+    "sales_marketing": 2588000000,
+    "general_administrative": 1342000000,
+    "operating_income": 2544000000,
+    "interest_income": 705000000,
+    "income_before_tax": 3137000000,
+    "income_tax": 626000000,
+    "net_income": 2511000000
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": 6560000000,
+    "short_term_investments": 4454000000,
+    "funds_receivable_customer": 6959000000,
+    "prepaids_other_current_assets": 824000000,
+    "total_current_assets": 18797000000,
+    "deferred_tax_assets": 2102000000,
+    "goodwill_intangibles": 770000000,
+    "other_noncurrent_assets": 539000000,
+    "total_assets": 22208000000,
+    "accrued_payables_other_current_liabilities": 2948000000,
+    "funds_payable_customers": 6959000000,
+    "current_debt": 1999000000,
+    "unearned_fees": 1743000000,
+    "total_current_liabilities": 13649000000,
+    "long_term_debt": 0,
+    "other_noncurrent_liabilities": 360000000,
+    "total_liabilities": 14009000000,
+    "stockholders_equity": 8199000000
+  },
+  "cash_flow": {
+    "operating_cash_flow": 4646000000,
+    "property_equipment_purchases": 33000000,
+    "free_cash_flow": 4613000000,
+    "free_cash_flow_margin_percent": 38,
+    "investing_cash_flow": -748000000,
+    "financing_cash_flow": -3827000000,
+    "share_repurchases": 3789000000
+  },
+  "non_gaap": {
+    "adjusted_ebitda": 4297000000,
+    "adjusted_ebitda_margin_percent": 35
+  },
+  "workforce": {
+    "employees": 8200
+  },
+  "geography": {
+    "us_revenue": 4814000000,
+    "international_revenue": 7427000000
+  },
+  "environment": {
+    "reporting_year": 2022,
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "boundary": {
+      "description": "Airbnb corporate operations and operated subsidiaries; not a complete footprint of guest travel and stays.",
+      "scope_3_categories_included": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8
+      ],
+      "evidence_pdf_pages": [
+        12,
+        43,
+        45
+      ]
+    },
+    "greenhouse_gas": {
+      "scope_1": {
+        "value": 1375,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Scope 1",
+          "year_column": "2022",
+          "raw_value": "1,375\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "scope_2_location_based": {
+        "value": 5384,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Scope 2\n(location-based)",
+          "year_column": "2022",
+          "raw_value": "5,384\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "scope_2_market_based": {
+        "value": 1,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Scope 2\n(market-based)",
+          "year_column": "2022",
+          "raw_value": "1\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "scope_3_reported_categories": {
+        "value": 326764,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Scope 312",
+          "year_column": "2022",
+          "raw_value": "326,764\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "total_market_based": {
+        "value": 328140,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Combined Scope 1, 2\n(market-based) and 313 Emissions",
+          "year_column": "2022",
+          "raw_value": "328,140\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "scope_3_intensity_gross_profit": {
+        "value": 47,
+        "unit": "tCO2e per USD million gross profit",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 12,
+          "printed_page": "9",
+          "table": "Table 1",
+          "row_label": "Scope 3\nEmissions Intensity",
+          "year_column": "2022",
+          "raw_value": "47\u2020",
+          "table_bbox": [
+            45.97,
+            96.125,
+            563.96,
+            419.5562
+          ]
+        }
+      },
+      "scope_3_category_1": {
+        "value": 314998,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 41,
+          "printed_page": "38",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "314,998\u2020"
+        }
+      },
+      "scope_3_category_2": {
+        "value": 1554,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 42,
+          "printed_page": "39",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "1,554\u2020"
+        }
+      },
+      "scope_3_category_3": {
+        "value": 2832,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 42,
+          "printed_page": "39",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "2,832\u2020"
+        }
+      },
+      "scope_3_category_5": {
+        "value": 68,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 42,
+          "printed_page": "39",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "68\u2020"
+        }
+      },
+      "scope_3_category_6": {
+        "value": 2258,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 42,
+          "printed_page": "39",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "2,258\u2020"
+        }
+      },
+      "scope_3_category_7": {
+        "value": 4420,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 42,
+          "printed_page": "39",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "4,420\u2020"
+        }
+      },
+      "scope_3_category_8": {
+        "value": 634,
+        "unit": "tCO2e",
+        "status": "extracted_and_visually_checked",
+        "assurance": "limited",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 43,
+          "printed_page": "40",
+          "table": "Appendix A",
+          "year_column": "2022",
+          "raw_value": "634\u2020"
+        }
+      }
+    },
+    "energy": {
+      "office_renewable_electricity_matching_percent": {
+        "value": 100,
+        "unit": "percent",
+        "status": "company_reported",
+        "evidence": {
+          "source_id": 2344,
+          "pdf_page": 5,
+          "printed_page": "2"
+        },
+        "qualification": "Office electricity matched with purchased and retired energy attribute certificates; includes Scope 2 and upstream leased offices. This does not mean 100% of all energy is renewable. Scope 2 RE100 technical-criteria compliance was approximately 99% for 2022."
+      },
+      "total_energy_mwh": {
+        "value": null,
+        "status": "not_extracted"
+      }
+    },
+    "water": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "waste_circularity": {
+      "value": null,
+      "status": "not_extracted",
+      "note": "Scope 3 category 5 measures emissions from waste treatment, not tonnes of waste."
+    },
+    "biodiversity_land": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "pollution": {
+      "value": null,
+      "status": "not_extracted"
+    },
+    "assurance": {
+      "provider": "PricewaterhouseCoopers LLP",
+      "level": "limited",
+      "report_date": "2023-09-26",
+      "evidence_pdf_page": 44,
+      "applies_to": "Marked GHG metrics, not every statement in the sustainability report."
+    },
+    "comparability_notes": [
+      "2022 boundaries and methods changed; earlier years were not restated for these changes (PDF pages 50-51).",
+      "Environmental reporting year differs from the FY2025 financial demo.",
+      "Do not add both Scope 2 variants or subtract carbon credits from these reported gross inventory metrics.",
+      "Latest report stored for Airbnb in this catalog snapshot; latest available report worldwide has not been established."
+    ],
+    "source": {
+      "id": 2344,
+      "title": "Airbnb Sustainability and Community Update",
+      "url": "https://airbnb2020ipo.q4web.com/files/doc_downloads/governance_doc_updated/2023/Airbnb-SustainabilityandCommunityUpdate-2023-111623.pdf",
+      "catalog_download_url": "https://green500.hongyuanzhang.com/api/catalog/files/2344/download",
+      "sha256": "087cf27af5a5c13262961da728c094a4e1027c85f4e3dce5183880f84251e5ad",
+      "byte_count": 13522953,
+      "report_publication_year": 2023,
+      "catalog_last_checked_at": "2026-09-12T14:59:22.266180+00:00",
+      "pdf_page_count": 51
+    },
+    "extraction": {
+      "tool": "pdfplumber",
+      "version": "0.11.10",
+      "review": "Table 1 and Appendix A checked against rendered pages; totals reconciled. Energy claim read from page 5.",
+      "coverage": "Airbnb pilot; remaining environmental topics require further extraction and review."
+    }
+  },
+  "data_provenance": {
+    "financial_and_workforce_geography_sections": {
+      "status": "unverified_sample",
+      "description": "Values copied from the JSON format example supplied in the conversation; not extracted or verified financial statements."
+    },
+    "environment": {
+      "status": "report_extraction",
+      "description": "Extracted from the cited Airbnb sustainability report."
+    }
+  }
+}
