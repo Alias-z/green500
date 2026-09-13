@@ -4,7 +4,6 @@ A data-driven framework to quantify and compare the sustainability
 of companies in the S&P 500.
 
 Built for ETHack 2026 — Challenge #1.
-Password : ETHack
 
 ## Challenge
 

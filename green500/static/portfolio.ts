@@ -1298,10 +1298,6 @@ function installEvents(): void {
       if (run && demos) showApp();
     } catch (error) { element("login-error").textContent = error instanceof Error ? error.message : String(error); }
   };
-  element("logout").onclick = async () => {
-    try { await request<{ authenticated: boolean }>("/api/logout", { method: "POST", body: "{}" }); }
-    finally { showLogin(); }
-  };
   for (const name of ["compare", "reach", "ranking", "fund"] as const) element("demo-tab-" + name).onclick = () => showDemo(name);
   element<HTMLSelectElement>("pair-preset").onchange = () => void applyPairPreset();
   element<HTMLSelectElement>("compare-target").onchange = () => void changeCompareTarget();

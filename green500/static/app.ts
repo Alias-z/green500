@@ -1080,15 +1080,6 @@ element<HTMLFormElement>("login-form").onsubmit = async event => {
     input.select();
   } finally { if (submit) submit.disabled = false; }
 };
-element("logout").onclick = async () => {
-  try { await request<{ authenticated: boolean }>("/api/logout", { method: "POST", body: "{}" }); }
-  finally {
-    catalog = null;
-    const dialog = element<HTMLDialogElement>("source-dialog");
-    if (dialog.open) dialog.close();
-    showLogin();
-  }
-};
 element("dialog-close").onclick = () => element<HTMLDialogElement>("source-dialog").close();
 element("report-source-tab").onclick = async () => { setReportResultView(false); await refreshDialogDetail(true); };
 element("report-result-tab").onclick = async () => { setReportResultView(true); await refreshReportResult(); };

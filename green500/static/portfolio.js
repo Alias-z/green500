@@ -1119,14 +1119,6 @@ function installEvents() {
             element("login-error").textContent = error instanceof Error ? error.message : String(error);
         }
     };
-    element("logout").onclick = async () => {
-        try {
-            await request("/api/logout", { method: "POST", body: "{}" });
-        }
-        finally {
-            showLogin();
-        }
-    };
     for (const name of ["compare", "reach", "ranking", "fund"])
         element("demo-tab-" + name).onclick = () => showDemo(name);
     element("pair-preset").onchange = () => void applyPairPreset();
