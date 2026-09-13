@@ -913,11 +913,24 @@ function compactSigned(value) {
 function renderSectorShifts(sectors) {
     const chart = element("sector-shifts");
     chart.replaceChildren();
-    const colors = ["#1f5d3a", "#447f58", "#6b9b66", "#96ad6b", "#c1b764", "#d39a58", "#c87451", "#a65350", "#76506e", "#58658a", "#427f89"];
+    const sectorColors = {
+        "Communication Services": "#5856d6",
+        "Consumer Discretionary": "#ff9500",
+        "Consumer Staples": "#a2845e",
+        Energy: "#ff3b30",
+        Financials: "#007aff",
+        "Health Care": "#79ab52",
+        Industrials: "#af52de",
+        "Information Technology": "#5ac8fa",
+        Materials: "#8e8e93",
+        "Real Estate": "#ff2d55",
+        Utilities: "#30b0c7",
+    };
+    const colorFor = (sector) => sectorColors[sector] || "#636366";
     let start = 0;
     const slices = sectors.map((sector, index) => {
         const end = index === sectors.length - 1 ? 100 : start + sector.scenario_share_pct;
-        const slice = colors[index % colors.length] + " " + start.toFixed(6) + "% " + end.toFixed(6) + "%";
+        const slice = colorFor(sector.sector) + " " + start.toFixed(6) + "% " + end.toFixed(6) + "%";
         start = end;
         return slice;
     });
@@ -929,7 +942,7 @@ function renderSectorShifts(sectors) {
     sectors.forEach((sector, index) => {
         const row = make("div", "", "sector-legend-row");
         const swatch = make("span", "", "sector-swatch");
-        swatch.style.backgroundColor = colors[index % colors.length];
+        swatch.style.backgroundColor = colorFor(sector.sector);
         const label = make("span", "", "sector-legend-label");
         label.append(make("strong", sector.sector), make("small", sector.company_count + " companies"));
         const values = make("span", "", "sector-legend-values");

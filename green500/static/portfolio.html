@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Green500 · Model demos</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4935'/%3E%3Ctext x='19' y='47' font-size='46' font-family='sans-serif' font-weight='700' fill='%23e3f0cf'%3Eg%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/static/portfolio.css?v=708055d12b736f30">
+  <link rel="stylesheet" href="/static/portfolio.css?v=10e429eb9063bbae">
 </head>
 <body>
   <section id="login-view" class="login-view" hidden>
     <form id="login-form" class="login-card">
-      <span class="brand-mark" aria-hidden="true">g</span>
-      <h1>Green500</h1>
+      <div class="login-wordmark" aria-label="green500"><span>green</span>500</div>
+      <h1>Model demonstrations</h1>
       <label for="viewer-password">Viewer password</label>
       <input id="viewer-password" name="password" type="password" autocomplete="current-password" required autofocus>
       <button type="submit">Sign in</button>
@@ -21,7 +21,7 @@
 
   <div id="app-view" hidden>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Green500 sources"><span class="brand-mark" aria-hidden="true">g</span><strong>Green500</strong></a>
+      <a class="brand" href="/" aria-label="Green500 sources"><span class="brand-wordmark"><span>green</span>500</span></a>
       <span id="run-summary" class="run-summary">Loading models…</span>
       <nav aria-label="Project links"><a class="active" href="/portfolio">Demos</a><a href="/">Sources</a><button id="logout" class="link-button" type="button">Log out</button></nav>
     </header>
@@ -107,6 +107,6 @@
     <div class="dialog-body"><div id="sector-shifts" class="sector-chart" aria-live="polite"></div></div>
   </dialog>
 
-  <script src="/static/portfolio.js?v=a896734c564d667c" type="module"></script>
+  <script src="/static/portfolio.js?v=dcae11a5aeb10ead" type="module"></script>
 </body>
 </html>
