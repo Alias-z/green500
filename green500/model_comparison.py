@@ -170,6 +170,26 @@ def demo_presets():
         "snapshot_id": snapshot["snapshot_id"],
         "pair_presets": [
             {
+                "id": "opposite_emissions",
+                "label": "Scope 1 contrast · PG&E vs Capital One",
+                "description": "Both companies disclose Scope 1 emissions. The same 50% increase raises both saved ESG estimates for PG&E and lowers both for Capital One in this published snapshot.",
+                "target": "esg",
+                "company_ids": ["0001004980", "0000927628"],
+                "default_feature": "env_scope_1_tco2e",
+                "actions": {
+                    "decrease": {
+                        "label": "−50% per click",
+                        "operation": "percent",
+                        "value": -50,
+                    },
+                    "increase": {
+                        "label": "+50% per click",
+                        "operation": "percent",
+                        "value": 50,
+                    },
+                },
+            },
+            {
                 "id": "clean_power",
                 "label": "Clean power · Abbott vs 3M",
                 "description": "Both companies disclose renewable electricity; the endpoints create visible responses from both saved models.",
@@ -178,34 +198,14 @@ def demo_presets():
                 "default_feature": "env_renewable_electricity_percent",
                 "actions": {
                     "decrease": {
-                        "label": "−25 points per click",
+                        "label": "−25% per click",
                         "operation": "add",
                         "value": -25,
                     },
                     "increase": {
-                        "label": "+25 points per click",
+                        "label": "+25% per click",
                         "operation": "add",
                         "value": 25,
-                    },
-                },
-            },
-            {
-                "id": "direct_emissions",
-                "label": "Direct emissions · Apple vs Chevron",
-                "description": "Both companies disclose Scope 1 emissions; the preset tests a large relative change without mixing emissions definitions.",
-                "target": "esg",
-                "company_ids": ["0000320193", "0000093410"],
-                "default_feature": "env_scope_1_tco2e",
-                "actions": {
-                    "decrease": {
-                        "label": "−75% per click",
-                        "operation": "percent",
-                        "value": -75,
-                    },
-                    "increase": {
-                        "label": "+100% per click",
-                        "operation": "percent",
-                        "value": 100,
                     },
                 },
             },

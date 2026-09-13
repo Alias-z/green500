@@ -94,7 +94,8 @@ main { width: min(1120px, 100%); margin: 0 auto; padding: 22px 14px 56px; }
 .field-list dd { margin: 0; display: flex; justify-content: flex-end; align-items: flex-start; gap: 5px; text-align: right; font-variant-numeric: tabular-nums; }
 .evidence-button { min-height: 23px; padding: 2px 5px; flex: 0 0 auto; border-color: #c6d4c3; color: #315941; background: #edf4e9; font-size: 8px; }
 
-.reach-controls { display: grid; grid-template-columns: minmax(220px, 1fr) 90px 120px 120px auto; gap: 8px; align-items: end; }
+.reach-controls { display: grid; grid-template-columns: minmax(220px, 1fr) 100px 130px 140px; gap: 9px; align-items: end; }
+.reach-solutions-button { width: 100%; min-height: 64px; margin-top: 14px; border-radius: 16px; box-shadow: 0 4px 14px rgba(121, 171, 82, .24); font-size: 19px; letter-spacing: -.2px; }
 .suggestion-list { margin-top: 13px; display: grid; gap: 8px; }
 .suggestion-card { padding: 18px; display: grid; grid-template-columns: minmax(180px, .65fr) minmax(500px, 2fr) auto; gap: 16px; align-items: center; border: .5px solid var(--line); border-radius: 18px; background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .05); }
 .suggestion-card header span { color: #65776b; font-size: 8px; font-weight: 850; text-transform: uppercase; }

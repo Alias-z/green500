@@ -140,16 +140,20 @@ def test_demo_presets_bind_visible_actions_and_four_use_cases(client, monkeypatc
     assert result.status_code == 200
     body = result.json()
     assert [preset["id"] for preset in body["pair_presets"]] == [
+        "opposite_emissions",
         "clean_power",
-        "direct_emissions",
         "revenue_scale",
     ]
     assert all(len(preset["company_ids"]) == 2 for preset in body["pair_presets"])
     assert body["pair_presets"][0]["actions"]["increase"] == {
-        "label": "+25 points per click",
-        "operation": "add",
-        "value": 25,
+        "label": "+50% per click",
+        "operation": "percent",
+        "value": 50,
     }
+    assert body["pair_presets"][0]["company_ids"] == [
+        "0001004980",
+        "0000927628",
+    ]
     assert body["reach_preset"]["desired_score"] == 50
     assert body["ranking_preset"]["weights"] == {"environmental": 3}
     assert body["fund_preset"]["constraints"]["fund_usd"] == 1_000_000_000

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Green500 · Model demos</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4935'/%3E%3Ctext x='19' y='47' font-size='46' font-family='sans-serif' font-weight='700' fill='%23e3f0cf'%3Eg%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/static/portfolio.css?v=10e429eb9063bbae">
+  <link rel="stylesheet" href="/static/portfolio.css?v=4fa005f3e2c4732a">
 </head>
 <body>
   <section id="login-view" class="login-view" hidden>
@@ -62,8 +62,8 @@
           <label><span>Target</span><select id="reach-target"><option value="esg">ESG</option><option value="csa">CSA</option></select></label>
           <label><span>Model</span><select id="reach-model"><option value="ebm">EBM</option><option value="catboost">CatBoost</option></select></label>
           <label><span>Desired score</span><input id="reach-score" type="number" min="0" max="100" step="0.1"></label>
-          <button id="reach-find" type="button">Find one-parameter options</button>
         </div>
+        <button id="reach-find" class="reach-solutions-button" type="button">Show 3 parameter solutions for ESG target = 50</button>
         <p id="reach-disclosure" class="note"></p>
         <div id="reach-suggestions" class="suggestion-list" aria-live="polite"></div>
       </section>
@@ -107,6 +107,6 @@
     <div class="dialog-body"><div id="sector-shifts" class="sector-chart" aria-live="polite"></div></div>
   </dialog>
 
-  <script src="/static/portfolio.js?v=dcae11a5aeb10ead" type="module"></script>
+  <script src="/static/portfolio.js?v=2e19feccf2df1960" type="module"></script>
 </body>
 </html>

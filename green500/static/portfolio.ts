@@ -710,12 +710,22 @@ async function prepareReachDemo(target: TargetName, companyCik = ""): Promise<vo
   element("reach-suggestions").replaceChildren();
 }
 
+function updateReachSolutionsButton(): void {
+  const target = element<HTMLSelectElement>("reach-target").value.toUpperCase();
+  const score = Number(element<HTMLInputElement>("reach-score").value);
+  const displayedScore = Number.isFinite(score)
+    ? score.toLocaleString(undefined, { maximumFractionDigits: 1 })
+    : "—";
+  element("reach-find").textContent = `Show 3 parameter solutions for ${target} target = ${displayedScore}`;
+}
+
 function setReachDesiredScore(): void {
   const target = element<HTMLSelectElement>("reach-target").value as TargetName;
   const cik = element<HTMLSelectElement>("reach-company").value;
   const family = element<HTMLSelectElement>("reach-model").value as ModelFamily;
   const current = companyEvaluation(target, cik)?.predictions[family];
   if (typeof current === "number") element<HTMLInputElement>("reach-score").value = String(Math.min(100, Math.ceil(current + 5)));
+  updateReachSolutionsButton();
 }
 
 async function findTargetSuggestions(): Promise<void> {
@@ -725,6 +735,9 @@ async function findTargetSuggestions(): Promise<void> {
   const modelFamily = element<HTMLSelectElement>("reach-model").value as ModelFamily;
   const desiredScore = Number(element<HTMLInputElement>("reach-score").value);
   if (!Number.isFinite(desiredScore)) { showError("Enter a desired score."); return; }
+  const findButton = element<HTMLButtonElement>("reach-find");
+  findButton.disabled = true;
+  findButton.textContent = "Calculating 3 parameter solutions…";
   const signature = JSON.stringify({ target, companyId, modelFamily, desiredScore });
   const requestNumber = ++reachRequestNumber;
   element("reach-suggestions").replaceChildren(make("p", "Searching saved-model sensitivity…", "empty-result"));
@@ -739,6 +752,11 @@ async function findTargetSuggestions(): Promise<void> {
     showError();
   } catch (error) {
     if (requestNumber === reachRequestNumber) handleRequestError(error);
+  } finally {
+    if (requestNumber === reachRequestNumber) {
+      findButton.disabled = false;
+      updateReachSolutionsButton();
+    }
   }
 }
 
@@ -1233,6 +1251,7 @@ function installEvents(): void {
   element<HTMLSelectElement>("reach-target").onchange = event => void prepareReachDemo((event.currentTarget as HTMLSelectElement).value as TargetName);
   element<HTMLSelectElement>("reach-company").onchange = setReachDesiredScore;
   element<HTMLSelectElement>("reach-model").onchange = setReachDesiredScore;
+  element<HTMLInputElement>("reach-score").oninput = updateReachSolutionsButton;
   element("reach-find").onclick = () => void findTargetSuggestions();
   element<HTMLInputElement>("ranking-weight").oninput = scheduleRanking;
   element("renewable-increase").onclick = increaseRenewableScenario;
@@ -1260,6 +1279,7 @@ async function loadWorkspace(): Promise<void> {
     if (reachPreset) {
       element<HTMLSelectElement>("reach-model").value = reachPreset.model_family;
       element<HTMLInputElement>("reach-score").value = String(reachPreset.desired_score);
+      updateReachSolutionsButton();
     }
     await loadCompanies(demos.ranking_preset.target);
     showDemo("compare");

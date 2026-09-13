@@ -526,6 +526,14 @@ async function prepareReachDemo(target, companyCik = "") {
     setReachDesiredScore();
     element("reach-suggestions").replaceChildren();
 }
+function updateReachSolutionsButton() {
+    const target = element("reach-target").value.toUpperCase();
+    const score = Number(element("reach-score").value);
+    const displayedScore = Number.isFinite(score)
+        ? score.toLocaleString(undefined, { maximumFractionDigits: 1 })
+        : "—";
+    element("reach-find").textContent = `Show 3 parameter solutions for ${target} target = ${displayedScore}`;
+}
 function setReachDesiredScore() {
     const target = element("reach-target").value;
     const cik = element("reach-company").value;
@@ -533,6 +541,7 @@ function setReachDesiredScore() {
     const current = companyEvaluation(target, cik)?.predictions[family];
     if (typeof current === "number")
         element("reach-score").value = String(Math.min(100, Math.ceil(current + 5)));
+    updateReachSolutionsButton();
 }
 async function findTargetSuggestions() {
     if (!run)
@@ -545,6 +554,9 @@ async function findTargetSuggestions() {
         showError("Enter a desired score.");
         return;
     }
+    const findButton = element("reach-find");
+    findButton.disabled = true;
+    findButton.textContent = "Calculating 3 parameter solutions…";
     const signature = JSON.stringify({ target, companyId, modelFamily, desiredScore });
     const requestNumber = ++reachRequestNumber;
     element("reach-suggestions").replaceChildren(make("p", "Searching saved-model sensitivity…", "empty-result"));
@@ -562,6 +574,12 @@ async function findTargetSuggestions() {
     catch (error) {
         if (requestNumber === reachRequestNumber)
             handleRequestError(error);
+    }
+    finally {
+        if (requestNumber === reachRequestNumber) {
+            findButton.disabled = false;
+            updateReachSolutionsButton();
+        }
     }
 }
 function renderTargetSuggestions(response) {
@@ -1062,6 +1080,7 @@ function installEvents() {
     element("reach-target").onchange = event => void prepareReachDemo(event.currentTarget.value);
     element("reach-company").onchange = setReachDesiredScore;
     element("reach-model").onchange = setReachDesiredScore;
+    element("reach-score").oninput = updateReachSolutionsButton;
     element("reach-find").onclick = () => void findTargetSuggestions();
     element("ranking-weight").oninput = scheduleRanking;
     element("renewable-increase").onclick = increaseRenewableScenario;
@@ -1090,6 +1109,7 @@ async function loadWorkspace() {
         if (reachPreset) {
             element("reach-model").value = reachPreset.model_family;
             element("reach-score").value = String(reachPreset.desired_score);
+            updateReachSolutionsButton();
         }
         await loadCompanies(demos.ranking_preset.target);
         showDemo("compare");
