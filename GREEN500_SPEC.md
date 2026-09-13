@@ -127,10 +127,13 @@ changing the existing annual-financial result contract.
 ### Nonlinear-model training data
 
 Training data uses one logical row per company and target assessment cycle. Each row has an explicit
-`prediction_as_of` date. Feature selection admits only observations with a supported publication
-date on or before that cutoff. Reporting year, publication date and processing time remain distinct;
-an unknown publication date does not inherit a processing date. ESG and CSA labels are independent,
-so a missing label for one target does not remove the other target's eligible row.
+`prediction_as_of` date. The strict policy admits observations with a supported publisher publication
+date on or before that cutoff. A current-snapshot policy may use an exact public acquisition date as
+a conservative upper bound on availability when the publisher date is unknown. The publisher date
+remains null, the acquisition basis stays explicit, and this fallback cannot establish earlier
+historical availability. Reporting year, publication date, acquisition date and processing time
+remain distinct. ESG and CSA labels are independent, so a missing label for one target does not
+remove the other target's eligible row.
 
 The predictive matrix contains the fixed primitive features, a categorical industry feature and a
 small declared set of ratios whose units, periods, boundaries and denominators pass deterministic
@@ -144,7 +147,9 @@ Each immutable dataset snapshot retains aligned predictors, labels, companies, f
 coverage, the feature registry and a manifest with a hash and byte count for every file. Authorized
 label imports must state the target, assessment cycle, label publication date, source provenance and
 authorization reference. A genuine public score without this dated authorization metadata remains
-auditable and ineligible for training.
+auditable and ineligible for release training. An explicitly directed prototype may carry an
+unverified provider-rights marker through the label, dataset and model manifests. That marker keeps
+the artifact restricted and does not establish training or distribution rights.
 
 Historical forecasting reserves the latest fully observed cycle and validates earlier cycles with
 expanding windows. Snapshot estimation holds out company groups and uses group-aware development

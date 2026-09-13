@@ -123,8 +123,63 @@ def test_cutoff_keeps_zero_and_independent_labels_without_identifier_leakage():
     assert dataset["labels"][0]["csa_score"] is None
     assert not {"row_id", "company_cik", "ticker", "company_name"} & set(features)
     assert any(
-        item["reason"] == "The source was published after prediction_as_of."
+        item["reason"] == "The source became available after prediction_as_of."
         for item in dataset["metadata"][0]["quarantined_observations"]
+    )
+
+
+def test_acquisition_fallback_keeps_publication_date_null_and_persists_policy():
+    """Delivery mode uses exact document acquisition only as availability evidence."""
+    source = observation(
+        "env_scope_1_tco2e",
+        100.0,
+        publication_date=None,
+    )
+    source.update(
+        availability_date="2024-04-02",
+        availability_basis="public_document_acquisition_date",
+        public_document_acquired_at="2024-04-02T10:30:00+00:00",
+        source_document_sha256="b" * 64,
+    )
+
+    strict = build_dataset_from_records([company()], [source], [label()])
+    delivery = build_dataset_from_records(
+        [company()],
+        [source],
+        [label()],
+        "public-document-acquisition-fallback",
+    )
+
+    assert strict["X"][0]["env_scope_1_tco2e"] is None
+    assert strict["metadata"][0]["features"]["env_scope_1_tco2e"][
+        "availability_basis"
+    ] == "unavailable"
+    delivery_metadata = delivery["metadata"][0]["features"]["env_scope_1_tco2e"]
+    assert delivery["X"][0]["env_scope_1_tco2e"] == 100.0
+    assert delivery_metadata["publication_date"] is None
+    assert delivery_metadata["availability_date"] == "2024-04-02"
+    assert delivery_metadata["availability_basis"] == (
+        "public_document_acquisition_date"
+    )
+    assert delivery_metadata["source_document_sha256"] == "b" * 64
+    assert delivery["schema"]["availability_policy"] == (
+        "public_document_acquisition_fallback"
+    )
+
+    future_source = deepcopy(source)
+    future_source["availability_date"] = "2024-07-01"
+    future_source["public_document_acquired_at"] = "2024-07-01T10:30:00+00:00"
+    future = build_dataset_from_records(
+        [company()],
+        [future_source],
+        [label()],
+        "public-document-acquisition-fallback",
+    )
+    assert future["X"][0]["env_scope_1_tco2e"] is None
+    assert any(
+        item["availability_basis"] == "public_document_acquisition_date"
+        and item["reason"] == "The source became available after prediction_as_of."
+        for item in future["metadata"][0]["quarantined_observations"]
     )
 
 
@@ -249,7 +304,10 @@ def test_exported_snapshot_reloads_identical_rows(tmp_path):
         observation("climate_sbti_validated", True),
     ]
     dataset = build_dataset_from_records(
-        [company()], observations, [label("esg"), label("csa", 44)]
+        [company()],
+        observations,
+        [label("esg"), label("csa", 44)],
+        "public-document-acquisition-fallback",
     )
     result = export_dataset_snapshot(dataset, tmp_path / "training")
     loaded = load_dataset_snapshot(tmp_path / "training")
@@ -259,3 +317,9 @@ def test_exported_snapshot_reloads_identical_rows(tmp_path):
     assert loaded["snapshot_id"] == result["snapshot_id"]
     assert loaded["labels"][0]["esg_score"] == 55.0
     assert loaded["labels"][0]["csa_score"] == 44.0
+    assert loaded["manifest"]["availability_policy"] == (
+        "public_document_acquisition_fallback"
+    )
+    assert loaded["metadata"]["availability_policy"] == (
+        "public_document_acquisition_fallback"
+    )

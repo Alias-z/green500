@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 from copy import deepcopy
 from types import SimpleNamespace
@@ -85,6 +86,7 @@ def manifest(models=None):
         "known_industries": ["Industrials"],
         "active_features": active_features,
         "excluded_features": excluded_features,
+        "files": {"dataset_schema.json": {"sha256": "unused", "byte_count": 0}},
         "models": models
         or {
             "esg": {"ebm": {"path": "unused"}, "catboost": {"path": "unused"}},
@@ -99,6 +101,7 @@ def company_row():
         "company": {"company_cik": "0000000001", "ticker": "SYN"},
         "prediction_as_of": "2025-06-30",
         "assessment_cycle": "2025",
+        "availability_policy": "public_document_acquisition_fallback",
         "features": {
             "financial_revenue_usd": 100.0,
             "financial_operating_income_usd": 20.0,
@@ -117,8 +120,18 @@ def company_row():
     }
 
 
+def write_availability_contract(directory):
+    (directory / "dataset_schema.json").write_text(
+        json.dumps({"availability_policy": "public_document_acquisition_fallback"})
+    )
+    (directory / "dataset_manifest.json").write_text(
+        json.dumps({"availability_policy": "public_document_acquisition_fallback"})
+    )
+
+
 @pytest.fixture
-def saved_models(monkeypatch):
+def saved_models(monkeypatch, tmp_path):
+    write_availability_contract(tmp_path)
     run_manifest = manifest()
     models = {
         ("esg", "ebm"): SyntheticPredictionModel(
@@ -206,6 +219,7 @@ def test_invalid_active_mask_or_exclusion_contract_fails(
 ):
     run_manifest = manifest()
     change(run_manifest)
+    write_availability_contract(tmp_path)
     monkeypatch.setattr(
         "green500.ml.artifacts.load_verified_run", lambda run_dir: run_manifest
     )
@@ -220,6 +234,7 @@ def test_saved_model_feature_order_must_match_active_mask(monkeypatch, tmp_path)
     model = SyntheticPredictionModel(
         10, list(reversed(run_manifest["active_features"]["esg"]))
     )
+    write_availability_contract(tmp_path)
     monkeypatch.setattr(
         "green500.ml.artifacts.load_verified_run", lambda run_dir: run_manifest
     )
@@ -234,8 +249,16 @@ def test_saved_model_feature_order_must_match_active_mask(monkeypatch, tmp_path)
 def test_predict_company_uses_exact_as_of_row_without_refitting(saved_models, tmp_path):
     calls = []
 
-    def build_row(settings, company_id, prediction_as_of, assessment_cycle):
-        calls.append((company_id, prediction_as_of, assessment_cycle))
+    def build_row(
+        settings,
+        company_id,
+        prediction_as_of,
+        assessment_cycle,
+        availability_policy,
+    ):
+        calls.append(
+            (company_id, prediction_as_of, assessment_cycle, availability_policy)
+        )
         return company_row()
 
     result = predict_company(
@@ -246,9 +269,18 @@ def test_predict_company_uses_exact_as_of_row_without_refitting(saved_models, tm
         assessment_cycle="2025",
         row_builder=build_row,
     )
-    assert calls == [("0000000001", "2025-06-30", "2025")]
+    assert calls == [
+        (
+            "0000000001",
+            "2025-06-30",
+            "2025",
+            "public_document_acquisition_fallback",
+        )
+    ]
     assert result["model_version"] == "synthetic-run"
     assert result["data_cutoff"] == "2025-06-30"
+    assert result["availability_policy"] == "public_document_acquisition_fallback"
+    assert result["predictions"]["csa"]["ebm"] == pytest.approx(30.8)
 
 
 def test_scenario_copies_observations_and_recomputes_dependencies(

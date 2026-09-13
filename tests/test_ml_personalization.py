@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 
 import pytest
@@ -78,6 +79,7 @@ def manifest():
         "feature_categories": CATEGORIES,
         "numeric_training_ranges": {},
         "known_industries": ["Industrials"],
+        "files": {"dataset_schema.json": {"sha256": "unused", "byte_count": 0}},
         "active_features": {"esg": active},
         "excluded_features": {
             "esg": {
@@ -99,6 +101,7 @@ def rows():
             "row_id": "b",
             "company": {"company_cik": "0000000002", "ticker": "TWO"},
             "prediction_as_of": "2025-06-30",
+            "availability_policy": "public_document_acquisition_fallback",
             "features": {
                 "financial_value": 1.0,
                 "social_value": 1.0,
@@ -114,6 +117,7 @@ def rows():
             "row_id": "a",
             "company": {"company_cik": "0000000001", "ticker": "ONE"},
             "prediction_as_of": "2025-06-30",
+            "availability_policy": "public_document_acquisition_fallback",
             "features": {
                 "financial_value": 0.0,
                 "social_value": 0.0,
@@ -129,7 +133,13 @@ def rows():
 
 
 @pytest.fixture
-def synthetic_run(monkeypatch):
+def synthetic_run(monkeypatch, tmp_path):
+    (tmp_path / "dataset_schema.json").write_text(
+        json.dumps({"availability_policy": "public_document_acquisition_fallback"})
+    )
+    (tmp_path / "dataset_manifest.json").write_text(
+        json.dumps({"availability_policy": "public_document_acquisition_fallback"})
+    )
     model = SyntheticEbm()
     monkeypatch.setattr(
         "green500.ml.artifacts.load_verified_run",

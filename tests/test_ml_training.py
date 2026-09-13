@@ -12,7 +12,11 @@ from green500.ml.contracts import CompanyRecord, FeatureObservation, LabelRecord
 from green500.ml.dataset import build_dataset_from_records, export_dataset_snapshot
 from green500.ml.splits import build_split_assignments
 from green500.ml.training import (
+    ACQUISITION_DATE_LIMITATION,
+    DELIVERY_RIGHTS_LIMITATION,
+    SNAPSHOT_LIMITATION,
     _aligned_rows,
+    _dataset_limitations,
     _target_training,
     model_configuration_grid,
     train_models,
@@ -140,6 +144,25 @@ def test_default_search_has_four_required_configurations_per_family():
     }
     assert all(row["parameters"]["interactions"] == 0 for row in ebm)
     assert all(row["parameters"]["early_stopping_rounds"] == 0 for row in ebm)
+
+
+def test_delivery_limitations_preserve_rights_date_and_evaluation_boundaries():
+    dataset = _synthetic_dataset()
+    dataset["labels"][0]["esg_authorization_reference"] = (
+        "User-directed delivery prototype; provider training and distribution rights "
+        "not independently verified; 2026-09-13"
+    )
+    dataset["schema"]["availability_policy"] = "public_document_acquisition_fallback"
+
+    limitations = _dataset_limitations(
+        dataset, {"esg": {"mode": "snapshot_estimation"}}
+    )
+
+    assert limitations == [
+        DELIVERY_RIGHTS_LIMITATION,
+        SNAPSHOT_LIMITATION,
+        ACQUISITION_DATE_LIMITATION,
+    ]
 
 
 def test_actual_ebm_and_catboost_share_one_split_and_preserve_missing_values():

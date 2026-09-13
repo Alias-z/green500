@@ -7,6 +7,20 @@ import json
 import sys
 from pathlib import Path
 
+AVAILABILITY_POLICY_CHOICES = (
+    "publisher-publication-date",
+    "public-document-acquisition-fallback",
+)
+
+
+def _add_availability_policy_argument(command: argparse.ArgumentParser) -> None:
+    """Add the shared source-availability policy without changing publication dates."""
+    command.add_argument(
+        "--availability-policy",
+        choices=AVAILABILITY_POLICY_CHOICES,
+        default="publisher-publication-date",
+    )
+
 
 def _json_object(value: str, subject: str) -> dict:
     if value.startswith("@"):
@@ -34,6 +48,7 @@ def _parser() -> argparse.ArgumentParser:
         type=Path,
         help="Write full read-only source metadata repair rows to this JSON file.",
     )
+    _add_availability_policy_argument(audit)
 
     build = commands.add_parser(
         "build-dataset", help="Build one immutable dated dataset snapshot."
@@ -41,6 +56,7 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--config", type=Path, default=Path("config/ml.yaml"))
     build.add_argument("--labels", type=Path, required=True)
     build.add_argument("--output-dir", type=Path, required=True)
+    _add_availability_policy_argument(build)
 
     train = commands.add_parser(
         "train", help="Select and fit eligible EBM and CatBoost models."
@@ -87,6 +103,7 @@ def _parser() -> argparse.ArgumentParser:
     pipeline.add_argument("--labels", type=Path, required=True)
     pipeline.add_argument("--output-dir", type=Path, required=True)
     pipeline.add_argument("--split-mode", choices=("historical", "snapshot"))
+    _add_availability_policy_argument(pipeline)
     return parser
 
 
@@ -114,12 +131,20 @@ def _run(args: argparse.Namespace) -> dict:
         _check_config(args.config)
         from green500.ml.audit import audit_data
 
-        return audit_data(settings, args.labels, args.config, args.repair_output)
+        return audit_data(
+            settings,
+            args.labels,
+            args.config,
+            args.repair_output,
+            args.availability_policy,
+        )
     if args.command == "build-dataset":
         _check_config(args.config)
         from green500.ml.dataset import build_dataset_snapshot
 
-        return build_dataset_snapshot(settings, args.labels, args.output_dir)
+        return build_dataset_snapshot(
+            settings, args.labels, args.output_dir, args.availability_policy
+        )
     if args.command == "predict":
         from green500.ml.inference import predict_company
 
@@ -165,9 +190,17 @@ def _run(args: argparse.Namespace) -> dict:
         from green500.ml.training import train_models
 
         args.output_dir.mkdir(parents=True, exist_ok=True)
-        audit_result = audit_data(settings, args.labels, args.config)
+        audit_result = audit_data(
+            settings,
+            args.labels,
+            args.config,
+            availability_policy=args.availability_policy,
+        )
         dataset_result = build_dataset_snapshot(
-            settings, args.labels, args.output_dir / "datasets"
+            settings,
+            args.labels,
+            args.output_dir / "datasets",
+            args.availability_policy,
         )
         dataset_dir = dataset_result.get("snapshot_dir")
         if not dataset_dir:

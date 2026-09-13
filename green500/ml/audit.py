@@ -12,9 +12,11 @@ from pathlib import Path
 from green500.feature_catalog import feature_catalog
 from green500.ml.config import load_ml_config
 from green500.ml.dataset import (
+    PUBLISHER_PUBLICATION_DATE_POLICY,
     _build_feature_row,
     build_dataset_from_records,
     load_current_feature_records,
+    normalize_availability_policy,
     recompute_derived_features,
 )
 from green500.ml.feature_registry import (
@@ -52,7 +54,9 @@ PRIMITIVE_FEATURES_BY_CATEGORY = {
 }
 
 
-def _current_feature_audit(settings) -> tuple[dict, dict, list, list, dict]:
+def _current_feature_audit(
+    settings, availability_policy: str
+) -> tuple[dict, dict, list, list, dict]:
     """Summarize current validated values and retain records for label matching."""
     catalog = feature_catalog(settings)
     registry = FEATURE_REGISTRY
@@ -113,7 +117,9 @@ def _current_feature_audit(settings) -> tuple[dict, dict, list, list, dict]:
             "reporting_year_counts": dict(sorted(reporting_years.items())),
             "company_status_counts": dict(sorted(statuses.items())),
         }
-    companies, observations = load_current_feature_records(settings)
+    companies, observations = load_current_feature_records(
+        settings, availability_policy
+    )
     return category_coverage, feature_missingness, companies, observations, catalog
 
 
@@ -195,6 +201,8 @@ def _raw_feature_rows(companies, observations) -> tuple[list[dict], list[dict]]:
             "canonical_unit": None,
             "reporting_year": None,
             "publication_date": None,
+            "availability_date": None,
+            "availability_basis": "fixed_context",
             "boundary": None,
             "confidence": None,
         }
@@ -207,6 +215,8 @@ def _raw_feature_rows(companies, observations) -> tuple[list[dict], list[dict]]:
                     "canonical_unit": definition["canonical_unit"],
                     "reporting_year": None,
                     "publication_date": None,
+                    "availability_date": None,
+                    "availability_basis": "unavailable",
                     "boundary": None,
                     "confidence": None,
                 }
@@ -220,6 +230,13 @@ def _raw_feature_rows(companies, observations) -> tuple[list[dict], list[dict]]:
                     if observation.publication_date
                     else None
                 ),
+                "availability_date": (
+                    observation.availability_date.isoformat()
+                    if observation.availability_date
+                    else None
+                ),
+                "availability_basis": observation.availability_basis
+                or "unavailable",
                 "boundary": observation.boundary,
                 "confidence": observation.confidence,
             }
@@ -229,21 +246,28 @@ def _raw_feature_rows(companies, observations) -> tuple[list[dict], list[dict]]:
     return rows, metadata_rows
 
 
-def _dated_feature_rows(companies, observations, cutoff: date) -> list[dict]:
+def _dated_feature_rows(
+    companies, observations, cutoff: date, availability_policy: str
+) -> tuple[list[dict], list[dict]]:
     """Build current-source rows using the same date checks as model datasets."""
     observations_by_company = {}
     for observation in observations:
         observations_by_company.setdefault(observation.company_cik, []).append(
             observation
         )
-    return [
+    built_rows = [
         _build_feature_row(
             company,
             observations_by_company.get(company.company_cik, []),
             cutoff,
-        )[0]
+            availability_policy,
+        )
         for company in companies
     ]
+    return (
+        [row[0] for row in built_rows],
+        [row[1] for row in built_rows],
+    )
 
 
 def _distinct_count(values: list) -> int:
@@ -293,10 +317,15 @@ def _field_missing_statuses(
     return statuses
 
 
-def _publication_exclusion_counts(
-    companies, observations, raw_rows: list[dict], dated_rows: list[dict], cutoff: date
+def _availability_counts(
+    companies,
+    observations,
+    raw_rows: list[dict],
+    dated_rows: list[dict],
+    dated_metadata_rows: list[dict],
+    cutoff: date,
 ) -> dict[str, dict]:
-    """Count raw values excluded by absent or future publication dates."""
+    """Count publisher dates, conservative acquisition fallbacks, and exclusions."""
     observations_by_company = {}
     for observation in observations:
         observations_by_company.setdefault(observation.company_cik, {})[
@@ -306,15 +335,17 @@ def _publication_exclusion_counts(
     result = {}
     for feature_name, definition in registry.items():
         missing_date_count = 0
+        acquisition_fallback_count = 0
+        publisher_date_count = 0
+        no_availability_date_count = 0
         after_cutoff_count = 0
         excluded_count = 0
         dependencies = definition["derived_feature_dependencies"]
-        for company, raw_row, dated_row in zip(
-            companies, raw_rows, dated_rows, strict=True
+        for company, raw_row, dated_row, dated_metadata in zip(
+            companies, raw_rows, dated_rows, dated_metadata_rows, strict=True
         ):
-            if raw_row.get(feature_name) is None or dated_row.get(feature_name) is not None:
+            if raw_row.get(feature_name) is None:
                 continue
-            excluded_count += 1
             source_names = dependencies or [feature_name]
             source_observations = [
                 observations_by_company.get(company.company_cik, {}).get(name)
@@ -327,18 +358,34 @@ def _publication_exclusion_counts(
                 for item in source_observations
             ):
                 missing_date_count += 1
-            elif any(
+            if dated_row.get(feature_name) is not None:
+                basis = dated_metadata[feature_name].get("availability_basis")
+                if basis in {
+                    "public_document_acquisition_date",
+                    "derived_from_public_document_acquisition_date",
+                }:
+                    acquisition_fallback_count += 1
+                elif basis == "publisher_publication_date":
+                    publisher_date_count += 1
+                continue
+            excluded_count += 1
+            if any(
                 item is not None
                 and item.value is not None
-                and item.publication_date is not None
-                and item.publication_date > cutoff
+                and item.availability_date is not None
+                and item.availability_date > cutoff
                 for item in source_observations
             ):
                 after_cutoff_count += 1
+            else:
+                no_availability_date_count += 1
         result[feature_name] = {
             "raw_values_excluded_count": excluded_count,
-            "missing_publication_date_count": missing_date_count,
-            "published_after_cutoff_count": after_cutoff_count,
+            "raw_values_missing_publisher_publication_date_count": missing_date_count,
+            "publisher_publication_date_count": publisher_date_count,
+            "public_document_acquisition_fallback_count": acquisition_fallback_count,
+            "no_availability_date_count": no_availability_date_count,
+            "available_after_cutoff_count": after_cutoff_count,
         }
     return result
 
@@ -612,17 +659,21 @@ def audit_data(
     labels_path: Path | None = None,
     config_path: Path | None = None,
     repair_output_path: Path | None = None,
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
 ) -> dict:
     """Report current data coverage and independently usable target counts."""
+    availability_policy = normalize_availability_policy(availability_policy)
     category_coverage, feature_missingness, companies, observations, catalog = (
-        _current_feature_audit(settings)
+        _current_feature_audit(settings, availability_policy)
     )
     resolved_config_path = config_path or Path(__file__).resolve().parents[2] / "config/ml.yaml"
     config = load_ml_config(resolved_config_path)
     selection_config = config["training"]["feature_selection"]
     audit_cutoff = datetime.now(UTC).date()
     raw_rows, _ = _raw_feature_rows(companies, observations)
-    dated_rows = _dated_feature_rows(companies, observations, audit_cutoff)
+    dated_rows, dated_metadata_rows = _dated_feature_rows(
+        companies, observations, audit_cutoff, availability_policy
+    )
     missing_statuses = {
         feature_name: _field_missing_statuses(
             catalog, companies, raw_rows, feature_name
@@ -632,11 +683,16 @@ def audit_data(
     readiness = _provisional_feature_eligibility(
         raw_rows, dated_rows, missing_statuses, selection_config
     )
-    publication_exclusions = _publication_exclusion_counts(
-        companies, observations, raw_rows, dated_rows, audit_cutoff
+    availability_counts = _availability_counts(
+        companies,
+        observations,
+        raw_rows,
+        dated_rows,
+        dated_metadata_rows,
+        audit_cutoff,
     )
-    for feature_name, exclusions in publication_exclusions.items():
-        readiness[feature_name]["publication_date_exclusions"] = exclusions
+    for feature_name, counts in availability_counts.items():
+        readiness[feature_name]["availability_counts"] = counts
     completed_null_reasons = _completed_null_reason_distribution(catalog)
     repair_rows = _repair_manifest(
         catalog,
@@ -649,7 +705,9 @@ def audit_data(
         repair_rows, audit_cutoff, repair_output_path
     )
     authorized_labels = load_authorized_labels(labels_path) if labels_path else []
-    dataset = build_dataset_from_records(companies, observations, authorized_labels)
+    dataset = build_dataset_from_records(
+        companies, observations, authorized_labels, availability_policy
+    )
     usable_counts = {}
     numeric_names = [
         name
@@ -675,9 +733,16 @@ def audit_data(
     )
     limitations = [
         "Current category processing is incomplete.",
-        "An undated source value is quarantined from every dated feature row.",
         "Synthetic fixtures are allowed for tests only and are excluded from this audit.",
     ]
+    if availability_policy == PUBLISHER_PUBLICATION_DATE_POLICY:
+        limitations.append(
+            "A source without a publisher publication date is quarantined from every dated feature row."
+        )
+    else:
+        limitations.append(
+            "The exact public document acquisition date is a conservative availability date only; publisher publication_date remains null when unknown."
+        )
     if companies_with_all_five_category_values == 0:
         limitations.append(
             "Zero current companies have a populated primitive in all five categories."
@@ -685,6 +750,7 @@ def audit_data(
     return {
         "generated_at": datetime.now(UTC).isoformat(),
         "distinct_company_count": len(companies),
+        "availability_policy": availability_policy,
         "reporting_years": reporting_years,
         "primitive_feature_count": len(feature_missingness),
         "derived_feature_count": len(derived_feature_names()),
@@ -725,18 +791,30 @@ def audit_data(
             },
         },
         "completed_category_null_reasons": completed_null_reasons,
-        "publication_date_exclusion_counts": {
+        "availability_date_counts": {
             "raw_values_excluded_count": sum(
                 value["raw_values_excluded_count"]
-                for value in publication_exclusions.values()
+                for value in availability_counts.values()
             ),
-            "missing_publication_date_count": sum(
-                value["missing_publication_date_count"]
-                for value in publication_exclusions.values()
+            "raw_values_missing_publisher_publication_date_count": sum(
+                value["raw_values_missing_publisher_publication_date_count"]
+                for value in availability_counts.values()
             ),
-            "published_after_cutoff_count": sum(
-                value["published_after_cutoff_count"]
-                for value in publication_exclusions.values()
+            "publisher_publication_date_count": sum(
+                value["publisher_publication_date_count"]
+                for value in availability_counts.values()
+            ),
+            "public_document_acquisition_fallback_count": sum(
+                value["public_document_acquisition_fallback_count"]
+                for value in availability_counts.values()
+            ),
+            "no_availability_date_count": sum(
+                value["no_availability_date_count"]
+                for value in availability_counts.values()
+            ),
+            "available_after_cutoff_count": sum(
+                value["available_after_cutoff_count"]
+                for value in availability_counts.values()
             ),
         },
         "repair_manifest": repair_summary,

@@ -41,9 +41,21 @@ from green500.ml.feature_selection import (
 )
 from green500.ml.splits import TARGET_COLUMNS, SplitUnavailable, build_split_assignments
 
-TRAINING_VERSION = "green500-training-v1"
+TRAINING_VERSION = "green500-training-v2"
 MODEL_FAMILIES = ("ebm", "catboost")
 TARGETS = ("esg", "csa")
+DELIVERY_RIGHTS_LIMITATION = (
+    "Provider training and distribution rights were not independently verified for "
+    "this user-directed delivery prototype."
+)
+SNAPSHOT_LIMITATION = (
+    "Evaluation is held-out-company estimation of the current score snapshot; it does "
+    "not demonstrate forecasting."
+)
+ACQUISITION_DATE_LIMITATION = (
+    "Some feature availability cutoffs use the public document acquisition date as a "
+    "conservative upper bound because a publisher publication date is unavailable."
+)
 
 
 def _dataset_directory(path: str | Path) -> Path:
@@ -118,6 +130,37 @@ def _package_versions() -> dict[str, str]:
             )
         },
     }
+
+
+def _dataset_limitations(
+    dataset: dict[str, Any], splits: dict[str, dict[str, Any]]
+) -> list[str]:
+    """Carry evaluation, date, and provider-rights boundaries into model artifacts."""
+    limitations = []
+    label_rows = dataset.get("labels")
+    if not isinstance(label_rows, list):
+        raise TypeError("Dataset labels must be a list.")
+    references = {
+        row.get(f"{target}_authorization_reference")
+        for row in label_rows
+        if isinstance(row, dict)
+        for target in TARGETS
+        if row.get(TARGET_COLUMNS[target]) is not None
+    }
+    if any(
+        isinstance(reference, str)
+        and "rights not independently verified" in reference.casefold()
+        for reference in references
+    ):
+        limitations.append(DELIVERY_RIGHTS_LIMITATION)
+    if any(split["mode"] == "snapshot_estimation" for split in splits.values()):
+        limitations.append(SNAPSHOT_LIMITATION)
+    schema = dataset.get("schema")
+    if not isinstance(schema, dict):
+        raise TypeError("Dataset schema must be an object.")
+    if schema.get("availability_policy") == "public_document_acquisition_fallback":
+        limitations.append(ACQUISITION_DATE_LIMITATION)
+    return limitations
 
 
 def model_configuration_grid(
@@ -958,6 +1001,7 @@ def train_models(
             reason = str(error)
             blockers.append(reason)
             target_status[target] = {"status": "blocked", "reason": reason}
+    limitations = _dataset_limitations(dataset, splits)
     if not splits:
         return {
             "status": "blocked",
@@ -966,6 +1010,7 @@ def train_models(
             "dataset_snapshot_id": snapshot_id,
             "targets": target_status,
             "blockers": blockers,
+            "limitations": limitations,
         }
 
     target_results = {}
@@ -1008,6 +1053,7 @@ def train_models(
             "dataset_snapshot_id": snapshot_id,
             "targets": target_status,
             "blockers": blockers,
+            "limitations": limitations,
         }
 
     config_sha256 = hashlib.sha256(canonical_json_bytes(config)).hexdigest()
@@ -1039,6 +1085,7 @@ def train_models(
             "dataset_snapshot_id": snapshot_id,
             "targets": manifest["targets"],
             "blockers": manifest["blockers"],
+            "limitations": manifest["limitations"],
             "reused": True,
         }
     temporary = output / f".{run_id}.{os.getpid()}.{time.time_ns()}.tmp"
@@ -1166,6 +1213,7 @@ def train_models(
             "files": files,
             "targets": target_status,
             "blockers": blockers,
+            "limitations": limitations,
         }
         write_run_manifest(temporary, manifest)
         publish_run_directory(temporary, final_directory)
@@ -1180,5 +1228,6 @@ def train_models(
         "dataset_snapshot_id": snapshot_id,
         "targets": target_status,
         "blockers": blockers,
+        "limitations": limitations,
         "reused": False,
     }

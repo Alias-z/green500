@@ -18,11 +18,13 @@ uv sync --extra ml
 uv run --extra ml python -m green500.ml audit \
   --config config/ml.yaml \
   --labels data/reference/ml_labels_template.csv \
+  --availability-policy public-document-acquisition-fallback \
   --repair-output data/ml/audit/source-metadata-repairs.json
 
 uv run --extra ml python -m green500.ml build-dataset \
   --config config/ml.yaml \
   --labels data/reference/ml_labels_template.csv \
+  --availability-policy public-document-acquisition-fallback \
   --output-dir data/ml/datasets
 
 uv run --extra ml python -m green500.ml train \
@@ -52,6 +54,13 @@ publication date or a specific null reason. The printed JSON contains only its p
 the audit and one-command pipeline remain small enough for routine use. The repair file never
 changes source documents or extraction results.
 
+The default `publisher-publication-date` policy accepts only a publisher publication date on or
+before `prediction_as_of`. Delivery snapshots can explicitly use
+`public-document-acquisition-fallback`. When a publisher date is absent, this policy uses the date
+Green500 acquired the exact hash-bound public document as a conservative `availability_date`.
+Metadata keeps `publication_date` null and records `availability_basis` as
+`public_document_acquisition_date`.
+
 `--overrides` and `--weights` also accept `@path/to/input.json`. Scenario overrides accept finite
 primitive values or JSON `null`. Derived ratios are recomputed from copied source observations.
 The original feature row and its evidence remain unchanged. Scenario differences describe model
@@ -73,6 +82,7 @@ when authorized dated labels and valid splits are available:
 uv run --extra ml python -m green500.ml pipeline \
   --config config/ml.yaml \
   --labels data/reference/ml_labels_template.csv \
+  --availability-policy public-document-acquisition-fallback \
   --output-dir data/ml
 ```
 

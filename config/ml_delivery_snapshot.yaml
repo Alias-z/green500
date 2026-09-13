@@ -2,7 +2,7 @@ version: green500-ml-config-v2
 seed: 42
 
 splits:
-  mode: auto
+  mode: snapshot
   snapshot:
     final_test_fraction: 0.20
     validation_folds: 3
@@ -17,7 +17,9 @@ training:
     minimum_observed_fraction: 0.10
     minimum_continuous_distinct_values: 5
     minimum_boolean_count_per_level: 5
-    maximum_ambiguous_missing_fraction: 0.10
+    # Delivery snapshot engineering setting: retain fields whose current-source
+    # null reasons are at most 40% ambiguous, while persisting every fold count.
+    maximum_ambiguous_missing_fraction: 0.40
     ambiguous_missing_statuses: [not_extracted, processing, unknown, unspecified_null]
     core_categories: [financial, social, environmental, fixed_context]
     optional_categories: [climate_target, financial_target]

@@ -16,6 +16,8 @@ from green500.ml.inference import (
     _industry_warnings,
     _prediction_date,
     _range_warnings,
+    _require_row_availability_policy,
+    _saved_availability_policy,
     _validate_model_features,
     load_prediction_run,
     resolve_model_run,
@@ -123,6 +125,7 @@ def personalize_feature_rows(
         raise ValueError("Ranking rows must share one prediction_as_of date.")
     normalized_weights = validate_weights(weights)
     run_dir, _, manifest = load_prediction_run(model_run)
+    availability_policy = _saved_availability_policy(run_dir, manifest)
     entry = ((manifest.get("models") or {}).get(target) or {}).get("ebm")
     if not entry:
         raise FileNotFoundError(f"No saved EBM model is available for {target}.")
@@ -143,6 +146,7 @@ def personalize_feature_rows(
         raise RuntimeError("pandas is required for personalized ranking.") from error
     frames = []
     for row in rows:
+        _require_row_availability_policy(row, availability_policy)
         features = row.get("features")
         if not isinstance(features, dict):
             raise TypeError("A ranking row has no features object.")
@@ -237,6 +241,7 @@ def personalize_feature_rows(
         "target": target,
         "model_version": manifest.get("run_id", run_dir.name),
         "prediction_as_of": rows[0].get("prediction_as_of"),
+        "availability_policy": availability_policy,
         "weights": normalized_weights,
         "feature_selection": {
             "active_features": ordered,
@@ -288,12 +293,15 @@ def _build_default_cohort_rows(
     company_ids: list[str],
     prediction_as_of: str,
     assessment_cycle: str,
+    availability_policy: str,
 ) -> list[dict]:
     """Load source records once when ranking more than one company."""
     from green500.ml.contracts import training_row_id
     from green500.ml.dataset import _build_feature_row, load_current_feature_records
 
-    companies, observations = load_current_feature_records(settings)
+    companies, observations = load_current_feature_records(
+        settings, availability_policy
+    )
     observations_by_cik = {}
     for observation in observations:
         observations_by_cik.setdefault(observation.company_cik, []).append(observation)
@@ -316,6 +324,7 @@ def _build_default_cohort_rows(
             company,
             observations_by_cik.get(company.company_cik, []),
             prediction_date,
+            availability_policy,
         )
         warnings = sorted({item["reason"] for item in quarantined})
         warnings.append(
@@ -329,6 +338,7 @@ def _build_default_cohort_rows(
                 "company": company.model_dump(mode="json"),
                 "assessment_cycle": assessment_cycle,
                 "prediction_as_of": prediction_as_of,
+                "availability_policy": availability_policy,
                 "features": features,
                 "metadata": metadata,
                 "coverage": coverage,
@@ -356,9 +366,16 @@ def rank_companies(
         settings = load_settings()
     as_of = _prediction_date(prediction_as_of)
     company_ids = _cohort_company_ids(settings, cohort)
+    run_dir = resolve_model_run(settings, model_run)
+    _, _, manifest = load_prediction_run(run_dir)
+    availability_policy = _saved_availability_policy(run_dir, manifest)
     if row_builder is None:
         rows = _build_default_cohort_rows(
-            settings, company_ids, as_of, assessment_cycle
+            settings,
+            company_ids,
+            as_of,
+            assessment_cycle,
+            availability_policy,
         )
     else:
         rows = [
@@ -367,9 +384,10 @@ def rank_companies(
                 company_id,
                 as_of,
                 assessment_cycle=assessment_cycle,
+                availability_policy=availability_policy,
             )
             for company_id in company_ids
         ]
     return personalize_feature_rows(
-        rows, weights, target, resolve_model_run(settings, model_run)
+        rows, weights, target, run_dir
     )

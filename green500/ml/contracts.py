@@ -21,6 +21,11 @@ FeatureCategory = Literal[
 ]
 FeatureDataType = Literal["number", "integer", "boolean", "string"]
 LabelTarget = Literal["esg", "csa"]
+AvailabilityBasis = Literal[
+    "publisher_publication_date",
+    "public_document_acquisition_date",
+    "unavailable",
+]
 
 APPROVED_FEATURE_CATEGORIES = (
     "financial",
@@ -79,6 +84,8 @@ class FeatureObservation(StrictRecord):
     unit: str | None
     reporting_year: int | None = Field(default=None, ge=1900, le=2100)
     publication_date: date | None = None
+    availability_date: date | None = None
+    availability_basis: AvailabilityBasis | None = None
     processed_at: datetime | None = None
     boundary: str | None = None
     status: str = Field(min_length=1)
@@ -86,6 +93,10 @@ class FeatureObservation(StrictRecord):
     qualification: str | None = None
     confidence: float | None = Field(default=None, ge=0, le=1)
     source_document_id: int | None = Field(default=None, ge=1)
+    source_document_sha256: str | None = Field(
+        default=None, pattern=r"^[0-9a-f]{64}$"
+    )
+    public_document_acquired_at: datetime | None = None
     source_url: str | None = None
     evidence: dict | None = None
 
@@ -113,6 +124,20 @@ class FeatureObservation(StrictRecord):
         """Explain every absent observation without converting it to zero."""
         if self.value is None and not (self.missing_reason or "").strip():
             raise ValueError("A null feature observation needs a missing_reason.")
+        if self.availability_basis == "unavailable":
+            if self.availability_date is not None:
+                raise ValueError("Unavailable observations must omit availability_date.")
+        elif (self.availability_date is None) != (self.availability_basis is None):
+            raise ValueError(
+                "availability_date and availability_basis must be supplied together."
+            )
+        if (
+            self.availability_basis == "publisher_publication_date"
+            and self.availability_date != self.publication_date
+        ):
+            raise ValueError(
+                "Publisher availability must equal the separate publication_date."
+            )
         return self
 
 

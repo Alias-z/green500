@@ -33,7 +33,21 @@ from green500.ml.feature_registry import (
 )
 from green500.ml.labels import load_authorized_labels
 
-DATASET_VERSION = "green500-ml-dataset-v1"
+DATASET_VERSION = "green500-ml-dataset-v2"
+PUBLISHER_PUBLICATION_DATE_POLICY = "publisher_publication_date"
+PUBLIC_DOCUMENT_ACQUISITION_FALLBACK_POLICY = (
+    "public_document_acquisition_fallback"
+)
+AVAILABILITY_POLICIES = (
+    PUBLISHER_PUBLICATION_DATE_POLICY,
+    PUBLIC_DOCUMENT_ACQUISITION_FALLBACK_POLICY,
+)
+CLI_AVAILABILITY_POLICIES = {
+    "publisher-publication-date": PUBLISHER_PUBLICATION_DATE_POLICY,
+    "public-document-acquisition-fallback": (
+        PUBLIC_DOCUMENT_ACQUISITION_FALLBACK_POLICY
+    ),
+}
 COMPANY_COLUMNS = (
     "row_id",
     "company_cik",
@@ -146,30 +160,52 @@ def _parse_datetime(value) -> datetime | None:
     return None
 
 
-def _document_publication_dates(settings, document_ids: list[int]) -> dict[int, date]:
-    """Read reviewed publication dates bound to exact source-document hashes."""
+def normalize_availability_policy(value: str) -> str:
+    """Normalize CLI spelling and reject unsupported source-availability policies."""
+    normalized = CLI_AVAILABILITY_POLICIES.get(value, value)
+    if normalized not in AVAILABILITY_POLICIES:
+        raise ValueError("Unsupported source availability policy: " + str(value))
+    return normalized
+
+
+def _document_source_dates(settings, document_ids: list[int]) -> dict[int, dict]:
+    """Read publisher and acquisition dates bound to exact document IDs and hashes."""
     if not document_ids:
         return {}
     with db.connect(settings) as connection:
         rows = connection.execute(
-            """SELECT d.id,rs.review->>'publication_date' AS publication_date
+            """SELECT d.id,d.sha256,d.fetched_at,
+                      rs.review->>'publication_date' AS publication_date
             FROM documents d
-            JOIN report_sources rs
+            LEFT JOIN report_sources rs
               ON rs.company_cik=d.company_cik
              AND rs.review->>'document_sha256'=d.sha256
             WHERE d.id=ANY(%s)""",
             (sorted(set(document_ids)),),
         ).fetchall()
-    publication_dates = {}
+    source_dates = {}
     for row in rows:
         publication_date = _parse_date(row["publication_date"])
-        if publication_date is not None:
-            publication_dates[row["id"]] = publication_date
-    return publication_dates
+        current = source_dates.get(row["id"])
+        value = {
+            "source_document_sha256": row["sha256"],
+            "publication_date": publication_date,
+            "public_document_acquired_at": row["fetched_at"],
+            "public_document_acquisition_date": row["fetched_at"].date(),
+        }
+        if current is None or (
+            current["publication_date"] is None and publication_date is not None
+        ):
+            source_dates[row["id"]] = value
+    return source_dates
 
 
-def load_current_feature_records(settings) -> tuple[list[CompanyRecord], list[FeatureObservation]]:
+def load_current_feature_records(
+    settings,
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
+) -> tuple[list[CompanyRecord], list[FeatureObservation]]:
     """Adapt current validated outputs without treating processing time as publication time."""
+    availability_policy = normalize_availability_policy(availability_policy)
     catalog = feature_catalog(settings)
     with db.connect(settings) as connection:
         company_rows = connection.execute(
@@ -190,7 +226,7 @@ def load_current_feature_records(settings) -> tuple[list[CompanyRecord], list[Fe
         for details in company_metadata.values()
         if isinstance(details, dict) and isinstance(details.get("source_document_id"), int)
     ]
-    publication_dates = _document_publication_dates(settings, document_ids)
+    source_dates = _document_source_dates(settings, document_ids)
     source_definitions = feature_schema()["fields"]
     registry = feature_registry()
     observations = []
@@ -203,6 +239,23 @@ def load_current_feature_records(settings) -> tuple[list[CompanyRecord], list[Fe
             category_metadata = company_metadata.get(source_category) or {}
             field_metadata = (category_metadata.get("fields") or {}).get(feature_name) or {}
             source_document_id = category_metadata.get("source_document_id")
+            source_dates_for_document = source_dates.get(source_document_id, {})
+            publication_date = source_dates_for_document.get("publication_date")
+            if publication_date is not None:
+                availability_date = publication_date
+                availability_basis = "publisher_publication_date"
+            elif (
+                availability_policy == PUBLIC_DOCUMENT_ACQUISITION_FALLBACK_POLICY
+                and source_dates_for_document.get("public_document_acquisition_date")
+                is not None
+            ):
+                availability_date = source_dates_for_document[
+                    "public_document_acquisition_date"
+                ]
+                availability_basis = "public_document_acquisition_date"
+            else:
+                availability_date = None
+                availability_basis = "unavailable"
             value = feature_row.get(feature_name)
             reporting_year = field_metadata.get(
                 "reporting_year", field_metadata.get("fiscal_year")
@@ -227,7 +280,9 @@ def load_current_feature_records(settings) -> tuple[list[CompanyRecord], list[Fe
                     value=value,
                     unit=registry[feature_name]["canonical_unit"],
                     reporting_year=reporting_year,
-                    publication_date=publication_dates.get(source_document_id),
+                    publication_date=publication_date,
+                    availability_date=availability_date,
+                    availability_basis=availability_basis,
                     processed_at=_parse_datetime(category_metadata.get("processed_at")),
                     boundary=category_metadata.get("boundary"),
                     status=field_metadata.get("status")
@@ -237,6 +292,12 @@ def load_current_feature_records(settings) -> tuple[list[CompanyRecord], list[Fe
                     qualification=field_metadata.get("qualification"),
                     confidence=field_metadata.get("confidence"),
                     source_document_id=source_document_id,
+                    source_document_sha256=source_dates_for_document.get(
+                        "source_document_sha256"
+                    ),
+                    public_document_acquired_at=source_dates_for_document.get(
+                        "public_document_acquired_at"
+                    ),
                     source_url=source_url,
                     evidence=field_metadata.get("evidence"),
                 )
@@ -275,19 +336,46 @@ def _missing_feature_metadata(
         "missing_reason": reason,
         "reporting_year": None,
         "publication_date": None,
+        "availability_date": None,
+        "availability_basis": "unavailable",
         "processed_at": None,
         "boundary": None,
         "qualification": None,
         "confidence": None,
         "source_document_id": None,
+        "source_document_sha256": None,
+        "public_document_acquired_at": None,
         "source_url": None,
         "evidence": None,
         "canonical_unit": canonical_unit,
     }
 
 
-def _observation_metadata(observation: FeatureObservation, canonical_unit: str | None) -> dict:
+def _observation_availability(
+    observation: FeatureObservation, availability_policy: str
+) -> tuple[date | None, str]:
+    """Resolve availability without relabeling acquisition as publication."""
+    availability_policy = normalize_availability_policy(availability_policy)
+    if observation.publication_date is not None:
+        return observation.publication_date, "publisher_publication_date"
+    if (
+        availability_policy == PUBLIC_DOCUMENT_ACQUISITION_FALLBACK_POLICY
+        and observation.availability_basis == "public_document_acquisition_date"
+        and observation.availability_date is not None
+    ):
+        return observation.availability_date, "public_document_acquisition_date"
+    return None, "unavailable"
+
+
+def _observation_metadata(
+    observation: FeatureObservation,
+    canonical_unit: str | None,
+    availability_policy: str,
+) -> dict:
     """Convert one selected observation to JSON-safe audit metadata."""
+    availability_date, availability_basis = _observation_availability(
+        observation, availability_policy
+    )
     return {
         "status": observation.status,
         "source_missing_status": _normalized_source_missing_status(observation),
@@ -298,6 +386,10 @@ def _observation_metadata(observation: FeatureObservation, canonical_unit: str |
             if observation.publication_date is not None
             else None
         ),
+        "availability_date": (
+            availability_date.isoformat() if availability_date is not None else None
+        ),
+        "availability_basis": availability_basis,
         "processed_at": (
             observation.processed_at.isoformat()
             if observation.processed_at is not None
@@ -307,6 +399,12 @@ def _observation_metadata(observation: FeatureObservation, canonical_unit: str |
         "qualification": observation.qualification,
         "confidence": observation.confidence,
         "source_document_id": observation.source_document_id,
+        "source_document_sha256": observation.source_document_sha256,
+        "public_document_acquired_at": (
+            observation.public_document_acquired_at.isoformat()
+            if observation.public_document_acquired_at is not None
+            else None
+        ),
         "source_url": observation.source_url,
         "evidence": observation.evidence,
         "canonical_unit": canonical_unit,
@@ -331,27 +429,52 @@ def _value_matches_type(value, data_type: str) -> bool:
 
 
 def _select_observation(
-    observations: list[FeatureObservation], definition: dict, prediction_as_of: date
+    observations: list[FeatureObservation],
+    definition: dict,
+    prediction_as_of: date,
+    availability_policy: str,
 ) -> tuple[object, dict, list[dict]]:
     """Select the latest eligible source value and explain every rejected candidate."""
     quarantined = []
     eligible = []
     for observation in observations:
-        if observation.publication_date is None:
+        availability_date, availability_basis = _observation_availability(
+            observation, availability_policy
+        )
+        if availability_date is None:
             quarantined.append(
                 {
                     "feature_name": observation.feature_name,
                     "source_document_id": observation.source_document_id,
-                    "reason": "The source has no reliable publication_date.",
+                    "source_document_sha256": observation.source_document_sha256,
+                    "publication_date": (
+                        observation.publication_date.isoformat()
+                        if observation.publication_date is not None
+                        else None
+                    ),
+                    "availability_date": None,
+                    "availability_basis": "unavailable",
+                    "reason": (
+                        "The source has no eligible availability_date under the "
+                        "configured policy."
+                    ),
                 }
             )
             continue
-        if observation.publication_date > prediction_as_of:
+        if availability_date > prediction_as_of:
             quarantined.append(
                 {
                     "feature_name": observation.feature_name,
                     "source_document_id": observation.source_document_id,
-                    "reason": "The source was published after prediction_as_of.",
+                    "source_document_sha256": observation.source_document_sha256,
+                    "publication_date": (
+                        observation.publication_date.isoformat()
+                        if observation.publication_date is not None
+                        else None
+                    ),
+                    "availability_date": availability_date.isoformat(),
+                    "availability_basis": availability_basis,
+                    "reason": "The source became available after prediction_as_of.",
                 }
             )
             continue
@@ -394,7 +517,7 @@ def _select_observation(
         )
     eligible.sort(
         key=lambda item: (
-            item.publication_date,
+            _observation_availability(item, availability_policy)[0],
             item.reporting_year or 0,
             item.processed_at or datetime.min.replace(tzinfo=UTC),
         ),
@@ -404,8 +527,11 @@ def _select_observation(
     same_period = [
         item
         for item in eligible
-        if (item.publication_date, item.reporting_year)
-        == (selected.publication_date, selected.reporting_year)
+        if (_observation_availability(item, availability_policy)[0], item.reporting_year)
+        == (
+            _observation_availability(selected, availability_policy)[0],
+            selected.reporting_year,
+        )
     ]
     non_null_values = {json.dumps(item.value, sort_keys=True) for item in same_period if item.value is not None}
     if len(non_null_values) > 1:
@@ -426,7 +552,13 @@ def _select_observation(
             ),
             quarantined,
         )
-    return selected.value, _observation_metadata(selected, definition["canonical_unit"]), quarantined
+    return (
+        selected.value,
+        _observation_metadata(
+            selected, definition["canonical_unit"], availability_policy
+        ),
+        quarantined,
+    )
 
 
 def _dependency_values_are_compatible(
@@ -520,6 +652,19 @@ def recompute_derived_features(features: dict, metadata: dict) -> tuple[dict, di
             for item in dependency_metadata
             if item.get("publication_date")
         ]
+        availability_dates = [
+            item["availability_date"]
+            for item in dependency_metadata
+            if item.get("availability_date")
+        ]
+        availability_bases = {
+            item.get("availability_basis") for item in dependency_metadata
+        }
+        acquired_at_values = [
+            item["public_document_acquired_at"]
+            for item in dependency_metadata
+            if item.get("public_document_acquired_at")
+        ]
         confidence_values = [
             item["confidence"]
             for item in dependency_metadata
@@ -533,12 +678,32 @@ def recompute_derived_features(features: dict, metadata: dict) -> tuple[dict, di
             "source_missing_status": "observed",
             "missing_reason": None,
             "reporting_year": dependency_metadata[0]["reporting_year"],
-            "publication_date": max(publication_dates) if publication_dates else None,
+            "publication_date": (
+                max(publication_dates)
+                if len(publication_dates) == len(dependencies)
+                else None
+            ),
+            "availability_date": (
+                max(availability_dates)
+                if len(availability_dates) == len(dependencies)
+                else None
+            ),
+            "availability_basis": (
+                "derived_from_public_document_acquisition_date"
+                if "public_document_acquisition_date" in availability_bases
+                else "publisher_publication_date"
+                if availability_bases == {"publisher_publication_date"}
+                else "unavailable"
+            ),
             "processed_at": None,
             "boundary": boundaries[0] if boundaries else None,
             "qualification": "Computed from canonical source-backed dependencies.",
             "confidence": min(confidence_values) if confidence_values else None,
             "source_document_id": None,
+            "source_document_sha256": None,
+            "public_document_acquired_at": (
+                max(acquired_at_values) if acquired_at_values else None
+            ),
             "source_url": None,
             "evidence": {"dependencies": dependencies},
             "canonical_unit": definition["canonical_unit"],
@@ -616,8 +781,10 @@ def _build_feature_row(
     company: CompanyRecord,
     company_observations: list[FeatureObservation],
     prediction_as_of: date,
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
 ) -> tuple[dict, dict, dict, list[dict]]:
     """Build one cutoff-safe feature row and its audit metadata."""
+    availability_policy = normalize_availability_policy(availability_policy)
     registry = feature_registry()
     features = {name: None for name in predictive_feature_names()}
     metadata = {
@@ -634,11 +801,15 @@ def _build_feature_row(
         "missing_reason": None,
         "reporting_year": None,
         "publication_date": None,
+        "availability_date": None,
+        "availability_basis": "fixed_context",
         "processed_at": None,
         "boundary": None,
         "qualification": "Current company registry context; no historical effective date is asserted.",
         "confidence": None,
         "source_document_id": None,
+        "source_document_sha256": None,
+        "public_document_acquired_at": None,
         "source_url": None,
         "evidence": None,
         "canonical_unit": None,
@@ -651,7 +822,10 @@ def _build_feature_row(
         if feature_name == "industry" or definition["derived_feature_dependencies"]:
             continue
         value, feature_metadata, feature_quarantine = _select_observation(
-            by_feature.get(feature_name, []), definition, prediction_as_of
+            by_feature.get(feature_name, []),
+            definition,
+            prediction_as_of,
+            availability_policy,
         )
         features[feature_name] = value
         metadata[feature_name] = feature_metadata
@@ -664,8 +838,10 @@ def build_dataset_from_records(
     companies: list[CompanyRecord | dict],
     observations: list[FeatureObservation | dict],
     label_records: list[LabelRecord | dict],
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
 ) -> dict:
     """Build a dated logical dataset from validated in-memory source records."""
+    availability_policy = normalize_availability_policy(availability_policy)
     parsed_companies = [
         item if isinstance(item, CompanyRecord) else CompanyRecord.model_validate(item, strict=False)
         for item in companies
@@ -718,6 +894,7 @@ def build_dataset_from_records(
             company,
             observations_by_company.get(company_cik, []),
             prediction_as_of,
+            availability_policy,
         )
         company_rows.append(
             {
@@ -740,6 +917,7 @@ def build_dataset_from_records(
         metadata_rows.append(
             {
                 "row_id": row_id,
+                "availability_policy": availability_policy,
                 "features": feature_metadata,
                 "labels": {
                     target: (
@@ -786,7 +964,13 @@ def build_dataset_from_records(
             "csa": {"column": "csa_score", "range": [0, 100]},
         },
         "missing_values": "JSON null and empty CSV cells; a genuine zero remains zero.",
-        "timing_policy": "Source publication_date must be on or before prediction_as_of.",
+        "availability_policy": availability_policy,
+        "timing_policy": (
+            "Publisher publication_date is preferred. Under the configured delivery "
+            "snapshot fallback, the hash-bound public document acquisition date is a "
+            "conservative availability_date and remains distinct from publication_date. "
+            "The selected availability_date must be on or before prediction_as_of."
+        ),
         "preprocessing": "No learned preprocessing is fitted by the dataset builder.",
     }
     coverage = _dataset_coverage(
@@ -885,14 +1069,32 @@ def _dataset_coverage(
         "quarantined_observation_count": sum(
             len(row["quarantined_observations"]) for row in metadata_rows
         ),
+        "availability_basis_counts": dict(
+            sorted(
+                Counter(
+                    details.get("availability_basis") or "unavailable"
+                    for row in metadata_rows
+                    for details in row["features"].values()
+                ).items()
+            )
+        ),
     }
 
 
-def build_dataset(settings, labels_path: Path | str) -> dict:
+def build_dataset(
+    settings,
+    labels_path: Path | str,
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
+) -> dict:
     """Build a logical dated dataset from current sources and authorized labels."""
-    companies, observations = load_current_feature_records(settings)
+    availability_policy = normalize_availability_policy(availability_policy)
+    companies, observations = load_current_feature_records(
+        settings, availability_policy
+    )
     labels = load_authorized_labels(labels_path)
-    dataset = build_dataset_from_records(companies, observations, labels)
+    dataset = build_dataset_from_records(
+        companies, observations, labels, availability_policy
+    )
     dataset["coverage"]["company_count"] = len(
         {row["company_cik"] for row in dataset["companies"]}
     )
@@ -910,12 +1112,16 @@ def build_company_feature_row(
     company_id: str,
     prediction_as_of: date | str,
     assessment_cycle: str = "inference",
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
 ) -> dict:
     """Build one saved-schema inference row without retraining or label access."""
     prediction_date = _parse_date(prediction_as_of)
     if prediction_date is None:
         raise ValueError("prediction_as_of must be an ISO date.")
-    companies, observations = load_current_feature_records(settings)
+    availability_policy = normalize_availability_policy(availability_policy)
+    companies, observations = load_current_feature_records(
+        settings, availability_policy
+    )
     normalized_id = company_id.strip().casefold()
     matches = [
         company
@@ -930,6 +1136,7 @@ def build_company_feature_row(
         company,
         [item for item in observations if item.company_cik == company.company_cik],
         prediction_date,
+        availability_policy,
     )
     warnings = sorted({item["reason"] for item in quarantined})
     warnings.append(
@@ -942,6 +1149,7 @@ def build_company_feature_row(
         "company": company.model_dump(mode="json"),
         "assessment_cycle": assessment_cycle,
         "prediction_as_of": prediction_date.isoformat(),
+        "availability_policy": availability_policy,
         "features": features,
         "metadata": metadata,
         "coverage": coverage,
@@ -958,6 +1166,7 @@ def _snapshot_payloads(dataset: dict) -> dict[str, bytes]:
         "metadata.json": _json_bytes(
             {
                 "version": DATASET_VERSION,
+                "availability_policy": dataset["schema"]["availability_policy"],
                 "row_alignment": dataset["schema"]["row_alignment"],
                 "rows": dataset["metadata"],
             }
@@ -1001,6 +1210,7 @@ def export_dataset_snapshot(dataset: dict, output_dir: Path | str) -> dict:
         "version": DATASET_VERSION,
         "snapshot_id": snapshot_id,
         "dataset_hash": snapshot_id,
+        "availability_policy": dataset["schema"]["availability_policy"],
         "generated_at": dataset["generated_at"],
         "row_count": len(dataset["X"]),
         "numeric_feature_count": len(numeric_feature_names()),
@@ -1039,6 +1249,7 @@ def export_dataset_snapshot(dataset: dict, output_dir: Path | str) -> dict:
         "snapshot_path": "snapshots/" + snapshot_id,
         "manifest_sha256": hashlib.sha256(manifest_body).hexdigest(),
         "generated_at": manifest["generated_at"],
+        "availability_policy": manifest["availability_policy"],
     }
     temporary_latest = output_dir / f".latest.{os.getpid()}.tmp"
     temporary_latest.write_bytes(_json_bytes(latest))
@@ -1050,14 +1261,20 @@ def export_dataset_snapshot(dataset: dict, output_dir: Path | str) -> dict:
         "numeric_feature_count": manifest["numeric_feature_count"],
         "categorical_feature_count": manifest["categorical_feature_count"],
         "label_available_counts": manifest["label_available_counts"],
+        "availability_policy": manifest["availability_policy"],
     }
 
 
 def build_dataset_snapshot(
-    settings, labels_path: Path | str, output_dir: Path | str
+    settings,
+    labels_path: Path | str,
+    output_dir: Path | str,
+    availability_policy: str = PUBLISHER_PUBLICATION_DATE_POLICY,
 ) -> dict:
     """Build and publish one authorized dated dataset in a single call."""
-    return export_dataset_snapshot(build_dataset(settings, labels_path), output_dir)
+    return export_dataset_snapshot(
+        build_dataset(settings, labels_path, availability_policy), output_dir
+    )
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -1095,6 +1312,13 @@ def load_dataset_snapshot(path: Path | str) -> dict:
     manifest = json.loads((path / "manifest.json").read_bytes())
     _verify_snapshot_files(path, manifest)
     schema = json.loads((path / "schema.json").read_bytes())
+    metadata_document = json.loads((path / "metadata.json").read_bytes())
+    if (
+        schema.get("availability_policy") != manifest.get("availability_policy")
+        or metadata_document.get("availability_policy")
+        != manifest.get("availability_policy")
+    ):
+        raise ValueError("Dataset availability policy differs across saved artifacts.")
     registry_document = json.loads((path / "registry.json").read_bytes())
     raw_features = _read_csv(path / "X.csv")
     features = []
@@ -1120,7 +1344,7 @@ def load_dataset_snapshot(path: Path | str) -> dict:
         "companies": _read_csv(path / "companies.csv"),
         "X": features,
         "labels": _read_label_csv(path / "labels.csv"),
-        "metadata": json.loads((path / "metadata.json").read_bytes()),
+        "metadata": metadata_document,
         "schema": schema,
         "registry": registry_document["features"],
         "coverage": json.loads((path / "coverage.json").read_bytes()),

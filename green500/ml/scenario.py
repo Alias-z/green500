@@ -11,6 +11,8 @@ from typing import Any
 
 from green500.ml.inference import (
     _prediction_date,
+    _saved_availability_policy,
+    load_prediction_run,
     predict_feature_row,
     resolve_model_run,
 )
@@ -151,11 +153,15 @@ def predict_scenario(
         _validate_override(name, value, registry[name])
 
     as_of = _prediction_date(prediction_as_of)
+    run_dir = resolve_model_run(settings, model_run)
+    _, _, manifest = load_prediction_run(run_dir)
+    availability_policy = _saved_availability_policy(run_dir, manifest)
     original_row = row_builder(
         settings,
         company_id,
         as_of,
         assessment_cycle=assessment_cycle,
+        availability_policy=availability_policy,
     )
     scenario_row = copy.deepcopy(original_row)
     original_features = copy.deepcopy(original_row.get("features") or {})
@@ -183,7 +189,6 @@ def predict_scenario(
         "Scenario results describe model sensitivity, not a guaranteed score change.",
     ]
 
-    run_dir = resolve_model_run(settings, model_run)
     original_result = predict_feature_row(original_row, run_dir)
     scenario_result = predict_feature_row(scenario_row, run_dir)
     return {
@@ -191,6 +196,7 @@ def predict_scenario(
         "prediction_as_of": as_of,
         "assessment_cycle": assessment_cycle,
         "model_version": original_result["model_version"],
+        "availability_policy": availability_policy,
         "label": "Model sensitivity",
         "overrides": copy.deepcopy(overrides),
         "original": {

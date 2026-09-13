@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-CONFIG_VERSION = "green500-ml-config-v1"
+CONFIG_VERSION = "green500-ml-config-v2"
 SPLIT_MODES = {"auto", "snapshot", "historical"}
 
 

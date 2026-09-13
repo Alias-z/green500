@@ -104,7 +104,8 @@ def _build_registry() -> dict[str, dict]:
         category = _CATEGORY_NAMES[source_category]
         rules = [
             "Use only a validated existing extraction result.",
-            "Require publication_date on or before prediction_as_of.",
+            "Require an availability_date on or before prediction_as_of under the saved dataset policy.",
+            "Preserve publisher publication_date separately from a public document acquisition fallback.",
             "Preserve null for missing, conflicting, or incompatible disclosures.",
             "Accept only the declared canonical unit.",
         ]

@@ -105,6 +105,36 @@ def _excluded_features(manifest: dict, target: str) -> dict:
     return manifest["excluded_features"][target]
 
 
+def _saved_availability_policy(run_dir: Path, manifest: dict) -> str:
+    """Read the hash-verified dataset policy copied into the saved model run."""
+    import json
+
+    files = manifest.get("files")
+    if not isinstance(files, dict) or "dataset_schema.json" not in files:
+        raise ValueError("The model run does not hash-bind dataset_schema.json.")
+    schema_path = run_dir / "dataset_schema.json"
+    try:
+        schema = json.loads(schema_path.read_bytes())
+        dataset_manifest = json.loads((run_dir / "dataset_manifest.json").read_bytes())
+    except json.JSONDecodeError as error:
+        raise ValueError("The saved dataset policy artifacts are invalid JSON.") from error
+    if not isinstance(schema, dict) or not isinstance(dataset_manifest, dict):
+        raise TypeError("The saved dataset policy artifacts must be JSON objects.")
+    from green500.ml.dataset import normalize_availability_policy
+
+    policy = normalize_availability_policy(schema.get("availability_policy"))
+    if dataset_manifest.get("availability_policy") != policy:
+        raise ValueError("The saved dataset schema and manifest availability policies differ.")
+    return policy
+
+
+def _require_row_availability_policy(row: dict, policy: str) -> None:
+    if row.get("availability_policy") != policy:
+        raise ValueError(
+            "The inference row availability policy differs from the saved training policy."
+        )
+
+
 def resolve_model_run(settings: Any, model_run: str | Path | None) -> Path:
     """Resolve an explicit run or the integrity-checked latest-run pointer."""
     if model_run is not None:
@@ -270,6 +300,7 @@ def load_prediction_run(model_run: str | Path) -> tuple[Path, dict, dict]:
     verified = load_verified_run(run_dir)
     manifest = _manifest(verified)
     _ordered_features(manifest)
+    _saved_availability_policy(run_dir, manifest)
     for target in (manifest.get("models") or {}):
         _active_features(manifest, target)
     return run_dir, verified, manifest
@@ -318,6 +349,8 @@ def predict_feature_row(
 ) -> dict:
     """Predict an already-built dated row with every available saved model."""
     run_dir, _, manifest = load_prediction_run(model_run)
+    availability_policy = _saved_availability_policy(run_dir, manifest)
+    _require_row_availability_policy(row, availability_policy)
     features = row.get("features")
     if not isinstance(features, dict):
         raise TypeError("The inference row has no features object.")
@@ -378,6 +411,7 @@ def predict_feature_row(
         "model_version": manifest.get("run_id", run_dir.name),
         "dataset_snapshot_id": manifest.get("dataset_snapshot_id"),
         "data_cutoff": row.get("prediction_as_of"),
+        "availability_policy": availability_policy,
         "predictions": predictions,
         "coverage": row.get("coverage") or {},
         "model_feature_coverage": model_feature_coverage,
@@ -405,14 +439,18 @@ def predict_company(
 
         row_builder = build_company_feature_row
     as_of = _prediction_date(prediction_as_of)
+    run_dir = resolve_model_run(settings, model_run)
+    _, _, manifest = load_prediction_run(run_dir)
+    availability_policy = _saved_availability_policy(run_dir, manifest)
     row = row_builder(
         settings,
         company_id,
         as_of,
         assessment_cycle=assessment_cycle,
+        availability_policy=availability_policy,
     )
     if row.get("prediction_as_of") != as_of:
         raise ValueError("The company feature row does not match prediction_as_of.")
     if row.get("assessment_cycle") != assessment_cycle:
         raise ValueError("The company feature row does not match assessment_cycle.")
-    return predict_feature_row(row, resolve_model_run(settings, model_run))
+    return predict_feature_row(row, run_dir)

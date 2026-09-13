@@ -12,7 +12,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-RUN_MANIFEST_VERSION = "green500-model-run-v1"
+RUN_MANIFEST_VERSION = "green500-model-run-v2"
 TARGETS = {"esg", "csa"}
 MODEL_FAMILIES = {"ebm", "catboost"}
 
@@ -122,6 +122,7 @@ def _required_manifest_keys() -> set[str]:
         "files",
         "targets",
         "blockers",
+        "limitations",
     }
 
 
@@ -196,9 +197,15 @@ def load_verified_run(run_dir: str | Path) -> dict[str, Any]:
         or set(manifest["excluded_features"]) != target_keys
         or set(manifest["ablation_results"]) != target_keys
     ):
-        raise ValueError("Run manifest target feature artifacts differ from its models.")
+        raise ValueError(
+            "Run manifest target feature artifacts differ from its models."
+        )
     for target, active_features in manifest["active_features"].items():
-        if target not in TARGETS or not isinstance(active_features, list) or not active_features:
+        if (
+            target not in TARGETS
+            or not isinstance(active_features, list)
+            or not active_features
+        ):
             raise ValueError("Run manifest has an invalid target feature mask.")
         if len(active_features) != len(set(active_features)):
             raise ValueError("Run manifest active features contain duplicates.")
@@ -223,7 +230,9 @@ def load_verified_run(run_dir: str | Path) -> dict[str, Any]:
             or not isinstance(details.get("support"), dict)
             for details in exclusions.values()
         ):
-            raise ValueError("Run manifest exclusions need reasons and support details.")
+            raise ValueError(
+                "Run manifest exclusions need reasons and support details."
+            )
         ablations = manifest["ablation_results"][target]
         if not isinstance(ablations, dict) or set(ablations) != {
             "core",
