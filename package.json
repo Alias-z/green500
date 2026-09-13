@@ -1,0 +1,15 @@
+{
+  "name": "green500",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "npm run build",
+    "build": "tsc green500/static/app.ts --target ES2021 --lib ES2021,DOM --strict --noEmitOnError --outDir green500/static"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "typescript": "7.0.2"
+  },
+  "private": "true"
+}

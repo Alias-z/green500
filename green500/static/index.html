@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Green500 · Sources</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4935'/%3E%3Ctext x='19' y='47' font-size='46' font-family='sans-serif' font-weight='700' fill='%23e3f0cf'%3Eg%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css?v=73a3475f2b8b">
+</head>
+<body>
+  <section id="login-view" class="login-view" hidden>
+    <form id="login-form" class="login-card">
+      <div class="brand-mark" aria-hidden="true">g</div>
+      <h1>Green500</h1>
+      <label for="viewer-password">Viewer password</label>
+      <input id="viewer-password" name="password" type="password" autocomplete="current-password" required autofocus>
+      <button class="primary" type="submit">Open</button>
+      <p id="login-error" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="app-view" hidden>
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">g</div>
+        <div><h1>Green500</h1><p>Company source library</p></div>
+      </div>
+      <div class="live-counts" aria-label="Collection status">
+        <span><strong id="company-count">—</strong> companies</span>
+        <span><strong id="available-reports">—</strong> files</span>
+        <span><strong id="score-count">—</strong> scored</span>
+        <span><strong id="ai-count">—</strong> financial</span>
+        <span><strong id="environment-ai-count">—</strong> environment</span>
+        <span><strong id="social-ai-count">—</strong> people</span>
+        <span><strong id="financial-target-ai-count">—</strong> outlook</span>
+        <span><strong id="climate-ai-count">—</strong> climate</span>
+        <span><i id="live-dot" aria-hidden="true"></i><strong id="active-tasks">—</strong> active</span>
+      </div>
+      <nav aria-label="Project links">
+        <a href="/reports/microsoft/">Example</a>
+        <a href="/docs/data-sources">Sources</a>
+        <a href="/api/training-data" download>Download data</a>
+        <button id="logout" class="quiet" type="button">Log out</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="toolbar">
+        <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Company, ticker or CIK" aria-label="Search company, ticker or CIK"></div>
+        <select id="sector" aria-label="Sector"><option value="">All sectors</option></select>
+        <select id="coverage-filter" aria-label="Report coverage"><option value="">All coverage</option><option value="complete">5 categories with files</option><option value="latest">5 categories latest-checked</option><option value="ai_done">Extracted</option><option value="ai_review">Retry needed</option></select>
+        <span id="last-refresh" class="refresh-time">—</span>
+      </div>
+      <p id="notice" class="notice" role="status"></p>
+
+      <section class="catalog" aria-label="Company source coverage">
+        <table>
+          <thead id="company-head"></thead>
+          <tbody id="companies"></tbody>
+        </table>
+        <footer><span id="row-count">—</span><span id="catalog-updated">—</span></footer>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="source-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-shell">
+      <header class="dialog-header">
+        <div><span id="dialog-company" class="overline"></span><h2 id="dialog-title">Sources</h2><div id="report-tabs" class="report-tabs" hidden><button id="report-source-tab" class="preview-tab active" type="button">Original reports</button><button id="report-result-tab" class="preview-tab" type="button">AI results</button></div></div>
+        <button id="dialog-close" class="icon-button" type="button" aria-label="Close source viewer">×</button>
+      </header>
+      <div id="source-content" class="dialog-body">
+        <aside class="source-sidebar"><div id="source-list" class="source-list"></div></aside>
+        <section class="preview-panel" aria-live="polite">
+          <div id="preview-header" class="preview-header"></div>
+          <div id="preview-body" class="preview-body"><p class="empty-message">Choose a source.</p></div>
+        </section>
+      </div>
+      <section id="report-result-panel" class="report-result-panel" aria-live="polite" hidden></section>
+    </div>
+  </dialog>
+
+  <dialog id="score-dialog" aria-labelledby="score-title">
+    <header class="dialog-header">
+      <div><span id="score-company" class="overline"></span><h2 id="score-title">S&P Global</h2></div>
+      <button id="score-close" class="icon-button" type="button" aria-label="Close score details">×</button>
+    </header>
+    <div id="score-body" class="score-body"></div>
+  </dialog>
+
+  <script src="/static/app.js?v=73383ad4add2" defer></script>
+</body>
+</html>
