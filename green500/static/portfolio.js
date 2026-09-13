@@ -200,6 +200,7 @@ async function applyPairPreset() {
     appendCompanyOptions(element("compare-company-a"), companies, preset.company_ids[0]);
     appendCompanyOptions(element("compare-company-b"), companies, preset.company_ids[1]);
     appendParameterOptions(element("compare-parameter"), preset.target, preset.default_feature);
+    element("compare-apply-to").value = "both";
     pairScenarioByCik.clear();
     pairParameterTransitions.clear();
     pairChanges = [];
@@ -220,9 +221,22 @@ async function changeCompareTarget() {
     renderCompare();
 }
 function renderCompare() {
+    renderPairDescription();
     renderPairScores();
     renderCompareButtons();
     renderCompareDetails();
+}
+function renderPairDescription() {
+    const preset = currentPairPreset();
+    const pair = selectedPairIds();
+    const matchesPreset = currentCompareTarget() === preset.target
+        && pair[0] === preset.company_ids[0]
+        && pair[1] === preset.company_ids[1]
+        && element("compare-parameter").value === preset.default_feature
+        && element("compare-apply-to").value === "both";
+    element("pair-description").textContent = matchesPreset
+        ? preset.description
+        : "Apply one measurable change to either company or both companies and compare the saved models' responses.";
 }
 function renderPairScores() {
     const target = currentCompareTarget();
@@ -263,6 +277,50 @@ function renderPairScores() {
         }
         container.append(card);
     }
+    renderPairContrastSummary();
+}
+function scoreDirectionClass(value) {
+    if (typeof value !== "number" || !Number.isFinite(value) || Math.abs(value) < 1e-12)
+        return "neutral";
+    return value > 0 ? "positive" : "negative";
+}
+function renderPairContrastSummary() {
+    const summary = element("compare-summary");
+    summary.replaceChildren();
+    summary.hidden = true;
+    const compared = selectedPairIds().map(cik => pairScenarioByCik.get(cik));
+    if (compared.some(value => !value))
+        return;
+    const companies = compared;
+    const field = fieldFor(currentCompareTarget(), element("compare-parameter").value);
+    if (!field)
+        return;
+    const movements = companies.map(company => {
+        const before = numeric(company.original.features[field.feature_name]);
+        const after = numeric(company.scenario.features[field.feature_name]);
+        return before === null || after === null ? 0 : after - before;
+    });
+    const sameInputDirection = movements.every(value => value > 0) || movements.every(value => value < 0);
+    const oppositeForBothModels = ["ebm", "catboost"].every(family => {
+        const left = companies[0].differences[family];
+        const right = companies[1].differences[family];
+        return typeof left === "number" && typeof right === "number" && left * right < 0;
+    });
+    const target = currentCompareTarget().toUpperCase();
+    const inputDirection = movements[0] > 0 ? "increase" : "decrease";
+    summary.append(make("strong", sameInputDirection && oppositeForBothModels
+        ? `Same ${fieldLabel(field)} ${inputDirection} · opposite predicted ${target} response`
+        : `Predicted ${target} sensitivity`));
+    for (const company of companies) {
+        const result = make("div", "", "contrast-result");
+        result.append(make("span", company.company.name));
+        for (const family of ["ebm", "catboost"]) {
+            const delta = company.differences[family];
+            result.append(make("b", `${family === "ebm" ? "EBM" : "CatBoost"} ${formatDelta(delta)}`, scoreDirectionClass(delta)));
+        }
+        summary.append(result);
+    }
+    summary.hidden = false;
 }
 function currentComparisonRule(direction) {
     const target = currentCompareTarget();
@@ -301,6 +359,9 @@ function renderCompareButtons() {
     const field = fieldFor(currentCompareTarget(), element("compare-parameter").value);
     if (!field)
         return;
+    const isEmissions = field.feature_name.includes("emissions");
+    element("compare-decrease").querySelector("strong").textContent = isEmissions ? "Decrease emissions" : "Decrease";
+    element("compare-increase").querySelector("strong").textContent = isEmissions ? "Increase emissions" : "Increase";
     element("compare-decrease").querySelector("small").textContent = stepLabel(field, "decrease");
     element("compare-increase").querySelector("small").textContent = stepLabel(field, "increase");
     element("compare-decrease").disabled = !canStepPair("decrease");
@@ -1073,7 +1134,7 @@ function installEvents() {
     element("compare-company-a").onchange = () => { keepPairDistinct("a"); resetPairScenario(false); };
     element("compare-company-b").onchange = () => { keepPairDistinct("b"); resetPairScenario(false); };
     element("compare-parameter").onchange = () => resetPairScenario(false);
-    element("compare-apply-to").onchange = renderCompareButtons;
+    element("compare-apply-to").onchange = () => { renderPairDescription(); renderCompareButtons(); };
     element("compare-decrease").onclick = () => void runCumulativePairStep("decrease");
     element("compare-increase").onclick = () => void runCumulativePairStep("increase");
     element("compare-reset").onclick = () => resetPairScenario();

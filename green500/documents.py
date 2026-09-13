@@ -75,6 +75,48 @@ def pdf_lines(body: bytes) -> dict:
     return json.loads(result.stdout)
 
 
+def pdf_tables(body: bytes, pages: list[int]) -> dict:
+    """Extract tables from one to twenty selected PDF pages in a bounded subprocess."""
+    if (
+        not pages
+        or len(pages) > 20
+        or any(
+            isinstance(page, bool) or not isinstance(page, int) or page < 1
+            for page in pages
+        )
+    ):
+        raise ValueError(
+            "PDF table pages must contain one to twenty positive integers."
+        )
+    result = subprocess.run(
+        [
+            _parser_python(),
+            str(PROJECT_PACKAGE / "pdf_table_reader.py"),
+            "--pages",
+            ",".join(str(page) for page in pages),
+        ],
+        input=body,
+        capture_output=True,
+        timeout=60,
+        check=False,
+    )
+    if result.returncode:
+        raise ValueError("PDF tables could not be parsed within their resource limits.")
+    try:
+        parsed = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise ValueError("PDF table parser returned invalid JSON.") from error
+    if (
+        not isinstance(parsed, dict)
+        or parsed.get("version") != "pdf-tables-v2"
+        or not isinstance(parsed.get("pages"), list)
+        or [item.get("page") for item in parsed["pages"] if isinstance(item, dict)]
+        != pages
+    ):
+        raise ValueError("PDF table parser returned an invalid page result.")
+    return parsed
+
+
 def feed_lines(body: bytes) -> dict:
     """Retain feed entries and embedded HTML text, including entries without links."""
     selector = Selector(text=body.decode("utf-8", errors="replace"), type="xml")
@@ -112,23 +154,38 @@ def parse_document(settings, document: dict, task_id: int | None = None) -> dict
     """Persist citable text and explicitly mark unreadable or incomplete content."""
     try:
         body = read_bytes(settings.data_dir, document["sha256"])
-        filename = urlsplit(document["final_url"]).path.rsplit("/",1)[-1]
-        mime = document["content_type"].split(";",1)[0].lower()
+        filename = urlsplit(document["final_url"]).path.rsplit("/", 1)[-1]
+        mime = document["content_type"].split(";", 1)[0].lower()
         if body.lstrip().startswith(b"%PDF-"):
             parsed = pdf_lines(body)
         elif document["kind"] == "feed":
             parsed = feed_lines(body)
-        elif mime in {"application/json","text/csv","text/plain"} or "openxmlformats-officedocument" in mime or filename.lower().endswith((".json",".xlsx",".csv",".docx",".txt")):
+        elif (
+            mime in {"application/json", "text/csv", "text/plain"}
+            or "openxmlformats-officedocument" in mime
+            or filename.lower().endswith((".json", ".xlsx", ".csv", ".docx", ".txt"))
+        ):
             from green500.source_text import build_source_text
 
-            preview=build_source_text(body,document["content_type"],filename)
-            lines=[]
-            for number,line in enumerate(preview["text"].splitlines(),1):
-                location,separator,text=line.partition("\t")
-                lines.append({"id":location if separator else f"L{number}","page":None,"text":text if separator else line})
-            parsed={"parser_version":"source-lines-structured-v1","lines":lines,"is_complete":preview["is_complete"],"warnings":preview["warnings"]}
+            preview = build_source_text(body, document["content_type"], filename)
+            lines = []
+            for number, line in enumerate(preview["text"].splitlines(), 1):
+                location, separator, text = line.partition("\t")
+                lines.append(
+                    {
+                        "id": location if separator else f"L{number}",
+                        "page": None,
+                        "text": text if separator else line,
+                    }
+                )
+            parsed = {
+                "parser_version": "source-lines-structured-v1",
+                "lines": lines,
+                "is_complete": preview["is_complete"],
+                "warnings": preview["warnings"],
+            }
         else:
-            parsed=html_lines(body)
+            parsed = html_lines(body)
         total = sum(len(line["text"]) for line in parsed["lines"])
         if not total:
             raise ValueError(

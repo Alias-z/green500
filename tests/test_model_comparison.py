@@ -154,6 +154,14 @@ def test_demo_presets_bind_visible_actions_and_four_use_cases(client, monkeypatc
         "0001004980",
         "0000927628",
     ]
+    assert (
+        "same 50% Scope 1 emissions increase" in body["pair_presets"][0]["description"]
+    )
+    assert (
+        "PG&E's saved EBM and CatBoost ESG predictions rise"
+        in body["pair_presets"][0]["description"]
+    )
+    assert "Capital One's fall" in body["pair_presets"][0]["description"]
     assert body["reach_preset"]["desired_score"] == 50
     assert body["ranking_preset"]["weights"] == {"environmental": 3}
     assert body["fund_preset"]["constraints"]["fund_usd"] == 1_000_000_000

@@ -27,6 +27,76 @@ Tomorrow, the world commits to reaching net-zero emissions as fast as
 possible. You manage a $1 billion investment fund. How do you allocate
 your portfolio under this new scenario, and why?
 
+## Hackathon Approach
+
+Green500 turns scattered company disclosures into comparable evidence, learns
+how that evidence relates to published ESG assessments, and uses the result to
+support transparent investment decisions.
+
+### 1. Define ESG
+
+We define sustainability through three connected dimensions:
+
+- **Environmental:** greenhouse-gas emissions, energy, water, waste, climate
+  exposure, transition plans and progress against climate targets.
+- **Social:** employee safety, fair pay, workforce development, diversity,
+  human rights, supply-chain practices and community impact.
+- **Governance:** board oversight, accountability, business ethics, internal
+  controls, disclosure quality and management of environmental and social risk.
+
+Financial resilience is analyzed alongside ESG because a company needs the
+resources and operating strength to deliver its transition commitments.
+
+### 2. Build an evidence base for the S&P 500
+
+We freeze a dated S&P 500 constituent list, then collect the latest available
+evidence for every company:
+
+- published ESG and CSA scores, where public access and licensing permit;
+- SEC annual filings, proxy statements and company financial reports;
+- environmental and sustainability reports;
+- social, workforce and employee reports;
+- climate targets, transition plans and financial targets;
+- company financial observations used by the current financial-resilience proxy.
+
+The pipeline combines repeatable HTTP or Scrapy collection with targeted agent
+search for company sites whose report locations change. It retains each original
+file, source URL, observation time and content hash. An LLM converts PDF and HTML
+evidence into fixed, nullable JSON fields with source citations. Missing data stays
+visible, and the monitoring page shows collection and AI-processing progress for
+all 500 companies.
+
+### 3. Train an ESG prediction model
+
+Published ESG or CSA scores provide the supervised-learning target. Structured
+environmental, social, climate-target and financial observations provide the model
+features. The current training matrix has no separate governance feature block, so
+that coverage gap remains explicit. We compare nonlinear models suited to a small,
+sparse tabular dataset, starting with Explainable Boosting Machines and CatBoost.
+Cross-validation keeps reports from the same company in the same split so repeated
+reports do not create misleading accuracy. Sector remains explicit company context.
+
+The result includes saved EBM and CatBoost predictions plus EBM feature and category
+contributions. Provider-published scores remain separate from model predictions.
+Users can also change the relative environmental, social and governance weights to
+express their own priorities without rewriting the source data.
+
+### 4. Test future scenarios and allocate the $1 billion portfolio
+
+We change measurable inputs under a scenario such as rapid net-zero adoption:
+carbon exposure, emissions trajectories, target progress, capital expenditure,
+revenue, margins and workforce indicators. The saved models estimate how those
+changes affect each company's Green500 profile as model-sensitivity scenarios.
+
+For the $1 billion demonstration, a renewable-electricity scenario recomputes CSA
+EBM scores and ranks for the published company cohort. Each sector receives the
+same share of the fund as its share of the scenario score sum, so the displayed
+sector allocations total exactly $1 billion. A separate constrained allocator can
+limit companies and sectors and rank sustainability-eligible companies with a
+transparent financial-resilience proxy based on current margins, cash flow and
+leverage. This proxy describes current operating resilience; it does not predict
+investment return.
+
 ## Project Status
 
 The backend reads PDF or HTML reports and uses a model to extract structured

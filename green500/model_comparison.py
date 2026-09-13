@@ -172,7 +172,7 @@ def demo_presets():
             {
                 "id": "opposite_emissions",
                 "label": "Scope 1 contrast · PG&E vs Capital One",
-                "description": "Both companies disclose Scope 1 emissions. The same 50% increase raises both saved ESG estimates for PG&E and lowers both for Capital One in this published snapshot.",
+                "description": "Apply the same 50% Scope 1 emissions increase to both companies. PG&E's saved EBM and CatBoost ESG predictions rise, while Capital One's fall. This is a model-sensitivity contrast, not a causal claim.",
                 "target": "esg",
                 "company_ids": ["0001004980", "0000927628"],
                 "default_feature": "env_scope_1_tco2e",

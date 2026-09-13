@@ -26,6 +26,11 @@ ml = [
     "pyyaml==6.0.3",
     "scikit-learn==1.9.1",
 ]
+environment = [
+    "beautifulsoup4==4.15.0",
+    "jsonschema==4.26.0",
+    "pdfplumber==0.11.10",
+]
 
 [dependency-groups]
 dev = [

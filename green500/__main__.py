@@ -93,6 +93,10 @@ def main() -> int:
                 )
 
                 result = collect_sustainability_reports_task(task)
+            elif task["kind"] == "extract":
+                from green500.llm import extract_task
+
+                result = extract_task(task)
             else:
                 from green500.crawl import collect_task
 
@@ -108,11 +112,14 @@ def main() -> int:
             )
             print(json.dumps(result, default=str))
             return 0
-        except Exception as error:  # noqa: BLE001 - task boundary records every failure
+        except Exception as error:  # noqa: BLE001 - task boundary records every outcome
+            from green500.llm import ModelOutcomeUnknown
+
+            status = "unknown" if isinstance(error, ModelOutcomeUnknown) else "failed"
             db.finish(
                 settings,
                 task["id"],
-                "failed",
+                status,
                 error=str(error)[:1000],
             )
             print(json.dumps({"error": str(error)[:1000]}))

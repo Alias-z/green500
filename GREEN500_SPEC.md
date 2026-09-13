@@ -10,8 +10,9 @@ Updated: 2026-09-13
 | Agent source discovery | Prepare read-only, evidence-bound issuer report candidates without production writes or bundled browser infrastructure | `.codex/skills/green500-source-discovery/SKILL.md` |
 | Evidence storage | Atomically store and verify immutable source bytes by full content hash | `green500/storage.py` |
 | PostgreSQL persistence | Record companies, source versions, tasks, attempts, extractions and metrics | `green500/db.py`, `green500/schema.sql` |
-| Document parsing | Produce citable HTML text and page-scoped PDF text, with bounded OCR for fully image-based PDFs | `green500/documents.py`, `green500/pdf_reader.py` |
+| Document parsing | Produce citable HTML text, page-scoped PDF text and bounded table structure for selected PDF pages, with OCR for fully image-based PDFs | `green500/documents.py`, `green500/pdf_reader.py`, `green500/pdf_table_reader.py` |
 | Model transport | Call any configured OpenAI-compatible Chat Completions endpoint | `green500/processing/chat_completion.py` |
+| Queued environmental extraction | Extract and locally validate source-cited environmental metrics for an admitted report task | `green500/llm.py` |
 | Task execution | Claim durable work, isolate execution and preserve failed or unknown outcomes | `green500/worker.py` |
 | Single-table Ops | Inspect company progress and evidence and enqueue bounded actions | `green500/web.py`, `green500/static/app.ts` |
 | Command line | Set up the schema and run collection, extraction, worker or server commands | `green500/__main__.py` |
@@ -44,6 +45,8 @@ Original downloads accept a nonnegative optional byte limit; zero permits any or
 Project-local `data/objects/` stores original bytes by hash. Structured provider imports use `structured_observations` and `latest_observations`, separately from model-derived metrics. Observation identity includes company, source, reporting period, value and provider record. Rechecks deduplicate unchanged observations. Annual, quarterly and instant values never overwrite one another. Source checks append success, failure and identity uncertainty without deleting previous values. Name-only matches remain provisional. Enabled source schedules enqueue due work through the same bounded worker; report interpretation remains explicit. `collect financial` and `collect targets` expose these adapters through the CLI.
 
 Every admitted task receives an explicit outcome. An expired or interrupted model call may have an unknown provider outcome. Retries preserve earlier records. Successful cached extraction is bound to unchanged source content and extraction configuration. Paid calls preserve their actual provider response and available usage. Slow I/O runs outside the Scrapy event loop and outside database transactions.
+
+The `extract` task kind dispatches through `green500.llm.extract_task`. A transport interruption without a provider receipt records both the extraction and task as `unknown`; only an explicit operator retry may start another paid request.
 
 Structured model output must match the configured schema. Reported numeric text, units and source quotations must be supported by the cited lines. Deterministic normalization preserves original values and marks unsupported units or context for review. Quotation checks do not independently verify disclosure truth or semantic equivalence. Partial document parsing remains visible and cannot establish complete report coverage.
 
@@ -273,9 +276,13 @@ Collection resolves current companies in company-name order with CIK as a tie-br
 
 Document preparation retains the original hash and source locations. HTML blocks preserve empty cells, spans, generated row IDs and nearby headings; PDF blocks preserve page and line references. Nested tables require review and are excluded from automatic numeric selection. Selection is task-specific and never claims exhaustive coverage. Missing text layers remain visible.
 
+Optional table extraction accepts one to twenty explicit PDF pages and runs in a resource-bounded subprocess. It preserves rectangular source cells without joining values or inferring headers. A missing optional table dependency, malformed table or resource failure leaves the citable reading-order text available with a warning; it never converts partial table extraction into a complete-document claim.
+
 The financial example contract is an experiment, separate from production metric definitions. Financial values use base currency units, annual and instant periods remain distinct, and unsupported values are null. Canonical evidence maps field paths to original source rows and program-hydrated quotations. Unique bare field names may be canonicalized; ambiguity or duplicate paths fail. Fiscal year is verified against the full-source cover and requested year, with deterministic metadata evidence. Validation checks schema, references, scale and sign support; semantic accuracy still requires independent source checks.
 
 Model experiments preserve requests, provider responses, token counters, latency and dated pricing evidence. Current experimental calls use the existing shared Coding or Agent Plan gateway and admission; Packy and normal pay-go fallback are disabled. Historical token-priced costs remain estimates until reconciled with invoices. Subscription costs are allocations against a declared package price and quota; they do not establish marginal invoice cost. Green500 model events use `ai_function=green500`; experiment and company identifiers remain event metadata. Collection never dispatches these experiments automatically.
+
+Standalone delayed-receipt projection defaults to `data/runtime/observability/events` inside the Green500 project data directory. Writing to another event directory requires an explicit argument or `GREEN500_OBSERVABILITY_EVENT_DIRECTORY`; no shared host path is built into the package.
 
 ### Standard financial extraction
 
