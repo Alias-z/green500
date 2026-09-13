@@ -1,6 +1,6 @@
 """Pure checks for typed SBTi parsing, conservative matching and persistence calls."""
 
-from datetime import UTC, datetime
+from datetime import datetime
 from io import BytesIO
 from types import SimpleNamespace
 
@@ -61,7 +61,7 @@ def test_typed_workbook_rows_keep_source_rows_dates_and_ids():
                     "Targets set",
                     "",
                     "Commitment removed",
-                    datetime(2026, 9, 12, 1, 0, tzinfo=UTC),
+                    datetime(2026, 9, 12, 1, 0),  # noqa: DTZ001 - XLSX stores naive dates
                 ]
             ]
         ),
@@ -185,7 +185,7 @@ def test_collect_saves_both_raw_files_before_observations(monkeypatch):
                 "Targets set",
                 "",
                 "Committed",
-                datetime(2026, 9, 12, tzinfo=UTC),
+                datetime(2026, 9, 12),  # noqa: DTZ001 - XLSX stores naive dates
             ]
         ]
     )
@@ -197,7 +197,7 @@ def test_collect_saves_both_raw_files_before_observations(monkeypatch):
                 "Example Inc",
                 "NA",
                 "Reduce emissions.",
-                datetime(2025, 1, 2, tzinfo=UTC),
+                datetime(2025, 1, 2),  # noqa: DTZ001 - XLSX stores naive dates
             ]
         ]
     )
@@ -222,7 +222,7 @@ def test_collect_saves_both_raw_files_before_observations(monkeypatch):
             "id": len(calls),
             "sha256": str(len(calls)),
             "url": kwargs["url"],
-            "last_checked_at": datetime(2026, 9, 12, 12, 0, tzinfo=UTC),
+            "last_checked_at": datetime(2026, 9, 12, 12, 0),  # noqa: DTZ001
         }
 
     def save_observations(*args, **kwargs):
